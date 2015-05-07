@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>București</title>
+<script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.6/mapbox.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.8/mapbox.css' rel='stylesheet' />
+<style>
+  body { margin:0; padding:0; }
+  #map { position:absolute; top:0; bottom:0; width:100%; }
+
+  .menu-ui {
+  background:#fff;
+  position:absolute;
+  top:10px;right:10px;
+  z-index:1;
+  border-radius:3px;
+  width:120px;
+  border:1px solid rgba(0,0,0,0.4);
+  }
+  .menu-ui a {
+    font-size:13px;
+	font-family:sans-serif;
+    color:#404040;
+    display:block;
+    margin:0;padding:0;
+    padding:10px;
+    text-decoration:none;
+    border-bottom:1px solid rgba(0,0,0,0.25);
+    text-align:center;
+    }
+    .menu-ui a:first-child {
+      border-radius:3px 3px 0 0;
+      }
+    .menu-ui a:last-child {
+      border:none;
+      border-radius:0 0 3px 3px;
+      }
+    .menu-ui a:hover {
+      background:#f8f8f8;
+      color:#404040;
+      }
+    .menu-ui a.active {
+      background:#3887BE;
+      color:#FFF;
+      }
+      .menu-ui a.active:hover {
+        background:#3074a4;
+		}
+
+ .leaflet-control-locate {
+  border:1px solid rgba(0,0,0,0.4);
+  }
+.leaflet-control-locate a {
+  background-color:#fff;
+  background-position:-3px, -2px;
+  }
+.leaflet-control-locate.active a {
+  background-position:-33px -2px;
+  }
+
+</style>
+</head>
+
+<body>
+<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css' rel='stylesheet' />
+<!--[if lt IE 9]>
+<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.21.0/L.Control.Locate.ie.css' rel='stylesheet' />
+<![endif]-->
+
+<nav id='menu-ui' class='menu-ui'></nav>
+<div id="map"></div>
+
+<script>
+var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
+L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
+
+var drawnItems = L.geoJson()
+map.addLayer(drawnItems);
+
+//Add show location
+L.control.locate().addTo(map);
+
+//Load Nokia HERE sattelite images
+var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+//var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+	attribution: 'Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a> <a href="mailto:fostulbucuresti@gmail.com">Contact</a>',
+	subdomains: '1234',
+	mapID: 'newest',
+	app_id: 'Y8m9dK2brESDPGJPdrvs',
+	app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
+	base: 'aerial',
+	minZoom: 0,
+	maxZoom: 20
+}).addTo(map);
+
+//Historical streets layer
+var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed').addTo(map);
+
+//Photo layer
+var photoLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4989ce0').addTo(map);
+//Places layer
+var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79').addTo(map);
+
+
+var layers = document.getElementById('menu-ui');
+var selectedLayer = {};
+
+//Grouping layer for historical images (maybe we'll add more)
+var layerGroup = L.layerGroup().addTo(map);
+
+//L.mapbox.tileLayer('fostulbucuresti.ag4s8xd8').addTo(layerGroup);
+L.mapbox.tileLayer('fostulbucuresti.mbn6cevc').addTo(layerGroup);
+
+addLayer(layerGroup, '1944', 1, 'active');
+addLayer(streetsLayer, 'Străzi', 2, 'active');
+addLayer(photoLayer, 'Fotografii', 3, 'active');
+addLayer(placesLayer, 'Locuri', 4, '');
+
+map.removeLayer(placesLayer);
+
+function addLayer(layer, name, zIndex, status) {
+    layer
+        .setZIndex(zIndex)
+        .addTo(map);
+
+    // Create a simple layer switcher that
+    // toggles layers on and off.
+    var link = document.createElement('a');
+        link.href = '#';
+        link.className = status;
+        link.innerHTML = name;
+
+    link.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (map.hasLayer(layer)) {
+            map.removeLayer(layer);
+            this.className = '';
+        } else {
+            map.addLayer(layer);
+            this.className = 'active';
+        }
+    };
+
+    layers.appendChild(link);
+}
+
+</script>
+</body>
+</html>
