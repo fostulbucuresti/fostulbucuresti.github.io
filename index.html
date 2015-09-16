@@ -74,7 +74,7 @@
 <div id="map"></div>
 
 <script>
-var map = L.map('map', {tileLayer: {maxNativeZoom: 17}}).setView([44.4270377479225, 26.0852980613709], 16);
+var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
 L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
 
 var drawnItems = L.geoJson()
@@ -86,7 +86,7 @@ L.control.locate().addTo(map);
 //Load Nokia HERE sattelite images
 var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
 //var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-	attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a> ',
+	attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
 	subdomains: '1234',
 	mapID: 'newest',
 	app_id: '2hxHxR9kVBAcDTDelnNh',
@@ -107,12 +107,12 @@ var photoLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4989ce0');
 var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79');
 
 //Historical aerial tiles
-var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'Compagnie Aérienne Française 1927'});
-var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)'});
+var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'Compagnie Aérienne Française 1927', maxNativeZoom: 17, maxZoom: 19});
+var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)', maxNativeZoom: 17, maxZoom: 19});
 
 var sixtysixGroup = L.layerGroup();
 L.mapbox.tileLayer('fostulbucuresti.ddzov6a1',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
-L.mapbox.tileLayer('fostul-bucuresti.0yckdkrf',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
+L.mapbox.tileLayer('fostul-bucuresti.0yckdkrf',{attribution: 'Corona 1966', maxNativeZoom: 17, maxZoom: 19}).addTo(sixtysixGroup);
 
 
 var layers = document.getElementById('menu-ui');
@@ -133,8 +133,6 @@ function addLayer(layer, name, zIndex, sName) {
     layer
         .setZIndex(zIndex);
 		if ( activeLayers[sName] == 'active' ) { layer.addTo(map);};
-		//alert (activeLayers[sName]);
-	
 
     // Create a simple layer switcher that
     // toggles layers on and off.
