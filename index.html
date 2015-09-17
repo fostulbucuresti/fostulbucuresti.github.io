@@ -85,7 +85,7 @@ L.control.locate().addTo(map);
 
 //Load Nokia HERE sattelite images
 var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-//var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
+//var HERE_hybridDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
 	attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
 	subdomains: '1234',
 	mapID: 'newest',
@@ -96,6 +96,14 @@ var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/map
 	maxZoom: 20
 }).addTo(map);
 
+//Present day streets
+var MapQuestOpen_HybridOverlay = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.0.0/{type}/{z}/{x}/{y}.{ext}', {
+	type: 'hyb',
+	ext: 'png',
+	attribution: 'Tiles Courtesy of <a href="http://www.mapquest.com/">MapQuest</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+	subdomains: '1234',
+	opacity: 0.6
+});
 
 //Historical streets layer
 var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
@@ -166,7 +174,8 @@ function addAllLayers () {
 addLayer(twentySeven, '1927', 1, 'a1');
 addLayer(thirtyEight, '1938', 2, 'a2');
 addLayer(sixtysixGroup, '1966', 3, 'a3');
-addLayer(streetsLayer, 'Străzi', 4, 'p1');
+addLayer(MapQuestOpen_HybridOverlay, 'Străzi prezent', 4, 'a4');
+addLayer(streetsLayer, 'Străzi distruse', 4, 'p1');
 addLayer(photoLayer, 'Fotografii', 5, 'p2');
 addLayer(placesLayer, 'Locuri', 6, 'p3');
 }
@@ -176,6 +185,7 @@ function parseLayers (locationString) {
 				'a1' : '',
 				'a2' : '',
 				'a3' : '',
+				'a4' : '',
 				'p1' : '',
 				'p2' : '',
 				'p3' : ''
