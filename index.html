@@ -60,6 +60,13 @@
   background-position:-33px -2px;
   }
 
+.leaflet-popup-content {
+    width: auto !important;
+	}
+
+.marker-title {
+    width: auto !important;
+	}
 </style>
 </head>
 
@@ -74,6 +81,23 @@
 <div id="map"></div>
 
 <script>
+
+
+L.mapbox.marker.createPopup = function(e, r) {
+				if (!e || !e.properties)
+					return "";
+				var i = "";
+				return e.properties.title && (i += '<div class="marker-title">' + e.properties.title + "</div>"),
+				e.properties.thumbnail  && (i+= '<div class="marker-description"><a href="' + e.properties.photo + 
+				'" target="_"><img src="' + e.properties.thumbnail + '"></a>' +
+				(e.properties.author? 'Foto: ' + e.properties.author : "")  +
+				(e.properties.year? ", " + e.properties.year : "" ) + 
+				(e.properties.source? '<br>Sursa: ' + e.properties.source + "</div>" : "</div>" )),
+				e.properties.description && (i += '<div class="marker-description">' + e.properties.description + "</div>"),
+				(r || sanitize)(i)
+				
+		};
+			
 var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
 L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
 
@@ -109,7 +133,9 @@ var MapQuestOpen_HybridOverlay = L.tileLayer('http://otile{s}.mqcdn.com/tiles/1.
 var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
 
 //Photos layer
-var photoLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4989ce0');
+var photoLayer = L.mapbox.featureLayer()
+    .loadURL('geojson/photos.json')
+    .addTo(map);
 
 //Places layer
 var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79');
