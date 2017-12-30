@@ -5,6 +5,8 @@
 <title>București</title>
 <script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
 <link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+<link rel="stylesheet" href="scripts/leaflet.infoButton.css" />
+<script src="scripts/leaflet.infoButton.js"></script>
 <script src="scripts/leaflet-hash.js"></script>
 <style>
   body { margin:0; padding:0; }
@@ -159,6 +161,7 @@ var locationString = location.hash;
 parseLayers(locationString);
 addAllLayers();
 
+var infoButton = L.control.infoButton({linkTitle: 'Despre', title: '<font face="sans-serif"><h2>Despre</h2></font>', position: 'bottomright'}).addTo(map);
 
 function addLayer(layer, name, zIndex, sName) {
     layer

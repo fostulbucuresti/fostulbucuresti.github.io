@@ -1,0 +1,96 @@
+.leaflet-infoWindow-container {
+	height: 100%;
+	width: 100%;
+	
+	position: absolute;
+	z-index: 1000;
+	display: none;
+
+	cursor: auto;
+	font-weight: normal;
+	font-size: medium;
+	font-family: serif;
+}
+.leaflet-info-button {
+	font-size:18px;
+}
+.leaflet-infoWindow-container .leaflet-infoWindow-black {
+	position:fixed;
+	height: 100%;
+	width: 100%;
+	background-color: rgba(0,0,0,0.8);
+	opacity: 0;
+}
+.leaflet-infoWindow {
+	position: relative;
+	height: 45%;
+	left: 30%;
+	top: 30%;
+	width: 40%;
+	background-color: white;
+	border-radius:30px;
+}
+@media screen and (max-width: 720px) {
+  	.leaflet-infoWindow {
+		left: 10%;
+		top:10%;
+		width: 80%;
+	}
+}
+.leaflet-infoWindow .leaflet-title {
+	height:20%;
+	max-height: 100px;
+	padding:0% 10%;
+	overflow: hidden;
+	text-align: center;
+}
+.leaflet-infoWindow .leaflet-title * {
+	margin-top: 35px;
+}
+
+
+.leaflet-infoWindow .leaflet-content{
+	height:70%;
+	overflow-x: hidden;
+	overflow-y: scroll;
+  	border-top:1px solid #d0d0d0;
+  	border-bottom:1px solid #d0d0d0;
+  	padding:0% 7% 0 5%;
+}
+
+@-webkit-keyframes showInfo {
+    from {top: -100%;}
+    to {top: 10%;}
+}
+@keyframes showInfo {
+    from {top: -100%;}
+    to {top: 10%;}
+}
+
+@-webkit-keyframes hideInfo {
+    from {top: 10%;}
+    to {top: -100%;}
+}
+@keyframes hideInfo {
+    from {top: 10%;}
+    to {top: -100%;}
+} 
+
+@-webkit-keyframes showInfoContainer {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@keyframes showInfoContainer {
+    from {opacity: 0;}
+    to {opacity: 1;}
+} 
+
+
+@-webkit-keyframes hideInfoContainer {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
+@keyframes hideInfoContainer {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
