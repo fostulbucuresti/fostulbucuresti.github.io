@@ -140,6 +140,7 @@ var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79');
 var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'Compagnie Aérienne Française 1927', maxNativeZoom: 17, maxZoom: 19});
 var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)', maxNativeZoom: 17, maxZoom: 19});
 var seventyEight = L.mapbox.tileLayer('fostulbucuresti.2ezig8uc',{attribution: 'KH-9 Lower Resolution Mapping 1978', maxNativeZoom: 15, maxZoom: 19});
+var fortyThree = L.mapbox.tileLayer('fostulbucuresti.6429zeom',{attribution: 'SAAF 60 squadron courtesy of Col. David H. Klaus, USAF, Retired', maxNativeZoom: 19, maxZoom: 19});
 
 var sixtysixGroup = L.layerGroup();
 L.mapbox.tileLayer('fostulbucuresti.ddzov6a1',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
@@ -195,12 +196,13 @@ function addLayer(layer, name, zIndex, sName) {
 function addAllLayers () {
 addLayer(twentySeven, '1927', 1, 'a1');
 addLayer(thirtyEight, '1938', 2, 'a2');
-addLayer(sixtysixGroup, '1966', 3, 'a3');
-addLayer(seventyEight, '1978', 4, 'a5');
-addLayer(CartoDB_Positron, 'Străzi prezent', 5, 'a4');
-addLayer(streetsLayer, 'Străzi distruse', 6, 'p1');
-addLayer(photoLayer, 'Fotografii', 7, 'p2');
-addLayer(placesLayer, 'Locuri', 8, 'p3');
+addLayer(fortyThree, '1943', 3, 'a6');
+addLayer(sixtysixGroup, '1966', 4, 'a3');
+addLayer(seventyEight, '1978', 5, 'a5');
+addLayer(CartoDB_Positron, 'Străzi prezent', 6, 'a4');
+addLayer(streetsLayer, 'Străzi distruse', 7, 'p1');
+addLayer(photoLayer, 'Fotografii', 8, 'p2');
+addLayer(placesLayer, 'Locuri', 9, 'p3');
 }
 
 function parseLayers (locationString) {
@@ -209,7 +211,8 @@ function parseLayers (locationString) {
 				'a2' : '',
 				'a3' : '',
 				'a4' : '',
-                                'a5' : '',
+                'a5' : '',
+                'a6' : '',
 				'p1' : '',
 				'p2' : '',
 				'p3' : ''
