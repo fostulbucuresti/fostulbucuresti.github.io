@@ -13,17 +13,17 @@
   #map { position:absolute; top:0; bottom:0; width:100%; }
 
   .menu-ui {
-  background:#fff;
-  position:absolute;
-  top:10px;right:10px;
-  z-index:1;
-  border-radius:3px;
-  width:120px;
-  border:1px solid rgba(0,0,0,0.4);
+    background:#fff;
+    position:absolute;
+    top:10px;right:10px;
+    z-index:1;
+    border-radius:3px;
+    width:120px;
+    border:1px solid rgba(0,0,0,0.4);
   }
   .menu-ui a {
     font-size:13px;
-	font-family:sans-serif;
+    font-family:sans-serif;
     color:#404040;
     display:block;
     margin:0;padding:0;
@@ -31,44 +31,43 @@
     text-decoration:none;
     border-bottom:1px solid rgba(0,0,0,0.25);
     text-align:center;
-    }
-    .menu-ui a:first-child {
-      border-radius:3px 3px 0 0;
-      }
-    .menu-ui a:last-child {
-      border:none;
-      border-radius:0 0 3px 3px;
-      }
-    .menu-ui a:hover {
-      background:#f8f8f8;
-      color:#404040;
-      }
-    .menu-ui a.active {
-      background:#3887BE;
-      color:#FFF;
-      }
-      .menu-ui a.active:hover {
-        background:#3074a4;
-		}
-
- .leaflet-control-locate {
-  border:1px solid rgba(0,0,0,0.4);
   }
-.leaflet-control-locate a {
-  background-color:#fff;
-  background-position:-3px, -2px;
+  .menu-ui a:first-child {
+    border-radius:3px 3px 0 0;
   }
-.leaflet-control-locate.active a {
-  background-position:-33px -2px;
+  .menu-ui a:last-child {
+    border:none;
+    border-radius:0 0 3px 3px;
+  }
+  .menu-ui a:hover {
+    background:#f8f8f8;
+    color:#404040;
+  }
+  .menu-ui a.active {
+    background:#3887BE;
+    color:#FFF;
+  }
+  .menu-ui a.active:hover {
+    background:#3074a4;
   }
 
-.leaflet-popup-content {
+  .leaflet-control-locate {
+    border:1px solid rgba(0,0,0,0.4);
+  }
+  .leaflet-control-locate a {
+    background-color:#fff;
+    background-position:-3px, -2px;
+  }
+  .leaflet-control-locate.active a {
+    background-position:-33px -2px;
+  }
+  .leaflet-popup-content {
     width: auto !important;
-	}
+  }
 
-.marker-title {
+  .marker-title {
     width: auto !important;
-	}
+  }
 </style>
 </head>
 
@@ -86,19 +85,18 @@
 
 
 L.mapbox.marker.createPopup = function(e, r) {
-				if (!e || !e.properties)
-					return "";
-				var i = "";
-				return e.properties.title && (i += '<div class="marker-title">' + e.properties.title + "</div>"),
-				e.properties.thumbnail  && (i+= '<div class="marker-description"><a href="' + e.properties.photo + 
-				'" target="_"><img src="' + e.properties.thumbnail + '"></a>' +
-				(e.properties.author? 'Foto: ' + e.properties.author + (e.properties.year? ", " + e.properties.year : "" ) : "") + 
-				(e.properties.source? '<br>Sursa: ' + e.properties.source + "</div>" : "</div>" )),
-				e.properties.description && (i += '<div class="marker-description">' + e.properties.description + "</div>"),
-				(r || sanitize)(i)
-				
-		};
-			
+       if (!e || !e.properties)
+           return "";
+       var i = "";
+       return e.properties.title && (i += '<div class="marker-title">' + e.properties.title + "</div>"),
+       e.properties.thumbnail  && (i+= '<div class="marker-description"><a href="' + e.properties.photo + 
+       '" target="_"><img src="' + e.properties.thumbnail + '"></a>' +
+       (e.properties.author? 'Foto: ' + e.properties.author + (e.properties.year? ", " + e.properties.year : "" ) : "") + 
+       (e.properties.source? '<br>Sursa: ' + e.properties.source + "</div>" : "</div>" )),
+       e.properties.description && (i += '<div class="marker-description">' + e.properties.description + "</div>"),
+       (r || sanitize)(i)
+};
+
 var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
 L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
 
@@ -111,21 +109,21 @@ L.control.locate().addTo(map);
 //Load Nokia HERE sattelite images
 var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
 //var HERE_hybridDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-	attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
-	subdomains: '1234',
-	mapID: 'newest',
-	app_id: 'szl0C8iCbelZ2Isouvf1',
-	app_code: 'WJUAfRBVzccNZ-bdH-oyUA',
-	base: 'aerial',
-	minZoom: 0,
-	maxZoom: 20
+    attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+    subdomains: '1234',
+    mapID: 'newest',
+    app_id: 'szl0C8iCbelZ2Isouvf1',
+    app_code: 'WJUAfRBVzccNZ-bdH-oyUA',
+    base: 'aerial',
+    minZoom: 0,
+    maxZoom: 20
 }).addTo(map);
 
 //Present day streets
 var CartoDB_Positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png', {
-	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-	subdomains: 'abcd',
-	maxZoom: 19
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+    subdomains: 'abcd',
+    maxZoom: 19
 });
 
 //Historical streets layer
@@ -135,14 +133,12 @@ var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
 var photoLayer = L.mapbox.featureLayer()
     .loadURL('geojson/photos.json');
 
-//Places layer
-var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79');
-
 //Historical aerial tiles
 var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'Compagnie Aérienne Française 1927', maxNativeZoom: 17, maxZoom: 19});
 var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)', maxNativeZoom: 17, maxZoom: 19});
 var seventyEight = L.mapbox.tileLayer('fostulbucuresti.2ezig8uc',{attribution: 'KH-9 Lower Resolution Mapping 1978', maxNativeZoom: 15, maxZoom: 19});
 var fortyThree = L.mapbox.tileLayer('fostulbucuresti.6429zeom',{attribution: 'SAAF 60 squadron courtesy of Col. David H. Klaus, USAF, Retired', maxNativeZoom: 19, maxZoom: 20});
+var eighty = L.tileLayer('https://a.tiles.mapbox.com/v4/fostulbucuresti.2mch52uw/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw', { maxNativeZoom: 16, maxZoom: 19, attribution: 'KH-9 1980'});
 
 var sixtysixGroup = L.layerGroup();
 L.mapbox.tileLayer('fostulbucuresti.ddzov6a1',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
@@ -153,20 +149,19 @@ var layers = document.getElementById('menu-ui');
 //Parse active layers from location
 var activeLayers = {};
 layersString = '';
-	
+
 var locationString = location.hash;
-		if(locationString.indexOf('#') === 0) {
-			locationString = locationString.substr(1);
-		}
+if(locationString.indexOf('#') === 0) {
+    locationString = locationString.substr(1);
+}
 parseLayers(locationString);
 addAllLayers();
 
 var infoButton = L.control.infoButton({linkTitle: 'Despre', title: '<font face="sans-serif"><h2>Despre</h2></font>', position: 'bottomright'}).addTo(map);
 
 function addLayer(layer, name, zIndex, sName) {
-    layer
-        .setZIndex(zIndex);
-		if ( activeLayers[sName] == 'active' ) { layer.addTo(map);};
+    layer.setZIndex(zIndex);
+    if ( activeLayers[sName] == 'active' ) { layer.addTo(map);};
 
     // Create a simple layer switcher that
     // toggles layers on and off.
@@ -174,7 +169,7 @@ function addLayer(layer, name, zIndex, sName) {
         link.href = '#';
         link.className = activeLayers[sName];
         link.innerHTML = name;
-		link.id = sName;
+        link.id = sName;
 
     link.onclick = function(e) {
         e.preventDefault();
@@ -183,13 +178,13 @@ function addLayer(layer, name, zIndex, sName) {
         if (map.hasLayer(layer)) {
             map.removeLayer(layer);
             this.className = '';
-			activeLayers[this.id] = '';
-			setLayersString();
+            activeLayers[this.id] = '';
+            setLayersString();
         } else {
             map.addLayer(layer);
             this.className = 'active';
-			activeLayers[this.id] = 'active';
-			setLayersString();
+            activeLayers[this.id] = 'active';
+            setLayersString();
         }
     };
 
@@ -197,67 +192,66 @@ function addLayer(layer, name, zIndex, sName) {
 }
 
 function addAllLayers () {
-addLayer(twentySeven, '1927', 1, 'a1');
-addLayer(thirtyEight, '1938', 2, 'a2');
-addLayer(fortyThree, '1943', 3, 'a6');
-addLayer(sixtysixGroup, '1966', 4, 'a3');
-addLayer(seventyEight, '1978', 5, 'a5');
-addLayer(CartoDB_Positron, 'Străzi prezent', 6, 'a4');
-addLayer(streetsLayer, 'Străzi distruse', 7, 'p1');
-addLayer(photoLayer, 'Fotografii', 8, 'p2');
-addLayer(placesLayer, 'Locuri', 9, 'p3');
+    addLayer(twentySeven,   '1927', 1, 'a1');
+    addLayer(thirtyEight,   '1938', 2, 'a2');
+    addLayer(fortyThree,    '1943', 3, 'a6');
+    addLayer(sixtysixGroup, '1966', 4, 'a3');
+    addLayer(seventyEight,  '1978', 5, 'a5');
+    addLayer(eighty,        '1980', 6, 'a7');
+    addLayer(CartoDB_Positron, 'Străzi prezent',  7, 'a4');
+    addLayer(streetsLayer,     'Străzi distruse', 8, 'p1');
+    addLayer(photoLayer,       'Fotografii',      9, 'p2');
 }
 
 function parseLayers (locationString) {
-	activeLayers = {
-				'a1' : '',
-				'a2' : '',
-				'a3' : '',
-				'a4' : '',
-                'a5' : '',
-                'a6' : '',
-				'p1' : '',
-				'p2' : '',
-				'p3' : ''
-				};
-	layersString = '';
-	
-	var args = locationString.split("!");
-		if (args.length > 1) {
-			for( var i = 1; i < args.length; i++) {
-				activeLayers[args[i]] = 'active';
-				layersString = layersString + '!' + args[i];
-			}
-		} else {
-			//Default layers
-			activeLayers['a2'] = 'active';
-			activeLayers['p1'] = 'active';
-			activeLayers['p2'] = 'active';
-			layersString = "!a2!p1!p2";
-		}
+    activeLayers = { 'a1' : '',
+                     'a2' : '',
+                     'a3' : '',
+                     'a4' : '',
+                     'a5' : '',
+                     'a6' : '',
+                     'a7' : '',
+                     'p1' : '',
+                     'p2' : ''
+    };
+    layersString = '';
+
+    var args = locationString.split("!");
+    if (args.length > 1) {
+        for( var i = 1; i < args.length; i++) {
+            activeLayers[args[i]] = 'active';
+            layersString = layersString + '!' + args[i];
+        }
+    } else {
+        //Default layers
+        activeLayers['a2'] = 'active';
+        activeLayers['p1'] = 'active';
+        activeLayers['p2'] = 'active';
+        layersString = "!a2!p1!p2";
+    }
 }
 
 function removeLayers () {
-	// remove menu
-	for (var key in activeLayers) {
-		    var link = document.getElementById(key);
-			link.parentNode.removeChild(link);
-		}
-	// remove layers
-	map.removeLayer(thirtyeighGroup);
-	map.removeLayer(layerGroup);
-	map.removeLayer(streetsLayer);
-	map.removeLayer(photoLayer);
+    // remove menu
+    for (var key in activeLayers) {
+        var link = document.getElementById(key);
+        link.parentNode.removeChild(link);
+    }
+    // remove layers
+    map.removeLayer(thirtyeighGroup);
+    map.removeLayer(layerGroup);
+    map.removeLayer(streetsLayer);
+    map.removeLayer(photoLayer);
 }
 
 function setLayersString() {
-	layersString = '';
-	for (var key in activeLayers) {
-		if (activeLayers[key] != '') {
-			layersString = layersString + '!' + key;
-		}
-	}
-	location.replace(hash.lastCoords + '/' + layersString);
+    layersString = '';
+    for (var key in activeLayers) {
+        if (activeLayers[key] != '') {
+            layersString = layersString + '!' + key;
+        }
+    }
+    location.replace(hash.lastCoords + '/' + layersString);
     hash.lastHash = hash.lastCoords + '/' + layersString;
 }
 
@@ -271,8 +265,6 @@ var hash = new L.Hash(map);
 
   ga('create', 'UA-62723078-1', 'auto');
   ga('send', 'pageview');
-
-
 
 </script>
 </body>
