@@ -138,7 +138,11 @@ var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'C
 var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)', maxNativeZoom: 17, maxZoom: 19});
 var seventyEight = L.mapbox.tileLayer('fostulbucuresti.2ezig8uc',{attribution: 'KH-9 Lower Resolution Mapping 1978', maxNativeZoom: 15, maxZoom: 19});
 var fortyThree = L.mapbox.tileLayer('fostulbucuresti.6429zeom',{attribution: 'SAAF 60 squadron courtesy of Col. David H. Klaus, USAF, Retired', maxNativeZoom: 19, maxZoom: 20});
-var eighty = L.tileLayer('https://a.tiles.mapbox.com/v4/fostulbucuresti.2mch52uw/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw', { maxNativeZoom: 16, maxZoom: 19, attribution: 'KH-9 1980'});
+
+var eightyGroup = L.layerGroup();
+L.tileLayer('https://a.tiles.mapbox.com/v4/fostulbucuresti.cxfce0jt/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw', { maxNativeZoom: 17, maxZoom: 19, attribution: 'KH-9 High Resolution 1980'}).addTo(eightyGroup);
+L.tileLayer('https://a.tiles.mapbox.com/v4/fostulbucuresti.5mitx35s/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw', { maxNativeZoom: 17, maxZoom: 19, attribution: 'KH-9 High Resolution 1980'}).addTo(eightyGroup);
+L.tileLayer('https://a.tiles.mapbox.com/v4/fostulbucuresti.2t5ci0sl/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw', { maxNativeZoom: 17, maxZoom: 19, attribution: 'KH-9 High Resolution 1980'}).addTo(eightyGroup);
 
 var sixtysixGroup = L.layerGroup();
 L.mapbox.tileLayer('fostulbucuresti.ddzov6a1',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
@@ -197,7 +201,7 @@ function addAllLayers () {
     addLayer(fortyThree,    '1943', 3, 'a6');
     addLayer(sixtysixGroup, '1966', 4, 'a3');
     addLayer(seventyEight,  '1978', 5, 'a5');
-    addLayer(eighty,        '1980', 6, 'a7');
+    addLayer(eightyGroup,   '1980', 6, 'a7');
     addLayer(CartoDB_Positron, 'Străzi prezent',  7, 'a4');
     addLayer(streetsLayer,     'Străzi distruse', 8, 'p1');
     addLayer(photoLayer,       'Fotografii',      9, 'p2');
