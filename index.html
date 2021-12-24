@@ -119,12 +119,15 @@ var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/map
     maxZoom: 20
 }).addTo(map);
 
-//Present day streets
-var CartoDB_Positron = L.tileLayer('http://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
+//Google current streets layer
+var currentStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff', {
+//Only street labels
+//var currentStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff%2Cs.t%3A3%7Cs.e%3Ag%7Cp.v%3Aoff', {
+    attribution: 'Streets layer &copy;Google ',
+    minZoom: 0,
+    maxZoom: 20
 });
+
 
 //Historical streets layer
 var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
@@ -202,7 +205,7 @@ function addAllLayers () {
     addLayer(sixtysixGroup, '1966', 4, 'a3');
     addLayer(seventyEight,  '1978', 5, 'a5');
     addLayer(eightyGroup,   '1980', 6, 'a7');
-    addLayer(CartoDB_Positron, 'Străzi prezent',  7, 'a4');
+    addLayer(currentStreets,   'Străzi prezent',  7, 'a4');
     addLayer(streetsLayer,     'Străzi distruse', 8, 'p1');
     addLayer(photoLayer,       'Fotografii',      9, 'p2');
 }
