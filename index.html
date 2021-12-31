@@ -149,8 +149,12 @@ L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.5mitx35s/{z}/{x}/{y
 L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.2t5ci0sl/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 19, bounds: [ [44.59239917662877, 26.288328876157838], [44.5285966208057, 26.003009670386557] ], subdomains: 'abc', attribution: 'KH-9 High Resolution 1980'}).addTo(eightyGroup);
 
 var sixtysixGroup = L.layerGroup();
-L.mapbox.tileLayer('fostulbucuresti.ddzov6a1',{attribution: 'Corona 1966'}).addTo(sixtysixGroup);
-L.mapbox.tileLayer('fostul-bucuresti.0yckdkrf',{attribution: 'Corona 1966', maxNativeZoom: 17, maxZoom: 19}).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.0cvkcdk1/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.588085565, 26.082220276529345], [44.50050132140829, 25.957811008000004] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.6mflkcc7/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.588085565, 26.248596309391985], [44.50050502897149, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.1lhllfnd/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.500502646, 26.082216905786066], [44.412919984086365, 25.93430800000001] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.dlcbrygd/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.500502646, 26.22574154685466], [44.41291810511102, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.9jqv1qtp/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.412919726000005, 26.082221997428963], [44.339799256720084, 25.915798171000006] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
+L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.10q8y7hq/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.412919726000005, 26.202119625032303], [44.33979924694459, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
 
 var layers = document.getElementById('menu-ui');
 
