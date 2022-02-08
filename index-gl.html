@@ -218,7 +218,7 @@ color: #63b6e5;
 <script>
 // If no WebGL support, redirect to the old site
 /*if (!mapboxgl.supported()) {
-    window.location.href = "http://fostulbucuresti.github.io" + window.location.hash;
+    window.location.href = "https://fostulbucuresti.github.io" + window.location.hash;
 }*/
 
 // Default zoom, center, rotation and active layers
@@ -528,7 +528,7 @@ map.on('load', () => {
     });
     map.addSource('photos', {
         'type': 'geojson',
-        'data': 'http://fostulbucuresti.github.io/geojson/photos.json'
+        'data': 'geojson/photos.json'
     });
     map.addLayer({
         'id': 'photos_direction',
