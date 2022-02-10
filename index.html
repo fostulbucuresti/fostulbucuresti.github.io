@@ -1,276 +1,762 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset=utf-8 />
+<meta charset="utf-8" />
 <title>București</title>
-<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
-<link rel="stylesheet" href="scripts/leaflet.infoButton.css" />
-<script src="scripts/leaflet.infoButton.js"></script>
-<script src="scripts/leaflet-hash.js"></script>
-<style>
-  body { margin:0; padding:0; }
-  #map { position:absolute; top:0; bottom:0; width:100%; }
-
-  .menu-ui {
-    background:#fff;
-    position:absolute;
-    top:10px;right:10px;
-    z-index:1;
-    border-radius:3px;
-    width:120px;
-    border:1px solid rgba(0,0,0,0.4);
-  }
-  .menu-ui a {
-    font-size:13px;
-    font-family:sans-serif;
-    color:#404040;
-    display:block;
-    margin:0;padding:0;
-    padding:10px;
-    text-decoration:none;
-    border-bottom:1px solid rgba(0,0,0,0.25);
-    text-align:center;
-  }
-  .menu-ui a:first-child {
-    border-radius:3px 3px 0 0;
-  }
-  .menu-ui a:last-child {
-    border:none;
-    border-radius:0 0 3px 3px;
-  }
-  .menu-ui a:hover {
-    background:#f8f8f8;
-    color:#404040;
-  }
-  .menu-ui a.active {
-    background:#3887BE;
-    color:#FFF;
-  }
-  .menu-ui a.active:hover {
-    background:#3074a4;
-  }
-
-  .leaflet-control-locate {
-    border:1px solid rgba(0,0,0,0.4);
-  }
-  .leaflet-control-locate a {
-    background-color:#fff;
-    background-position:-3px, -2px;
-  }
-  .leaflet-control-locate.active a {
-    background-position:-33px -2px;
-  }
-  .leaflet-popup-content {
-    width: auto !important;
-  }
-
-  .marker-title {
-    width: auto !important;
-  }
-</style>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
 </head>
-
 <body>
-<script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css' rel='stylesheet' />
-<!--[if lt IE 9]>
-<link href='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.21.0/L.Control.Locate.ie.css' rel='stylesheet' />
-<![endif]-->
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
 
-<nav id='menu-ui' class='menu-ui'></nav>
+#menu-panel{
+/*overflow-y: hidden;
+display: flex;
+flex-direction: column;*/
+max-height: calc(100% - 42px);
+}
+
+#menu {
+  background: #fff;
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  border-radius: 3px;
+  width: 120px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-family: 'Open Sans', sans-serif;
+  max-height: inherit;
+  overflow-y: auto;*/
+}
+ 
+#menu a {
+  font-size: 13px;
+  color: #404040;
+  display: block;
+  margin: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+text-align: center;
+}
+
+#menu a:first-child {
+  border-radius:2px 2px 0 0;
+}
+#menu a:last-child {
+  border:none;
+  border-radius:0 0 2px 2px;
+}
+
+#menu a:hover {
+  background-color: #f8f8f8;
+  color: #404040;
+}
+ 
+#menu a.active {
+  background-color: #3887be;
+  color: #ffffff;
+}
+ 
+#menu a.active:hover {
+  background: #3074a4;
+}
+
+.mapboxgl-popup {
+  max-width: 400px;
+}
+
+.marker-title {
+  /*width: auto !important;*/
+  font: 12px/20px 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-weight: 900;
+  color: rgba(0,0,0,.75);
+}
+
+.marker-description a {
+  color: #3887BE;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.marker-description a:focus {
+  outline: none;
+}
+
+/*.mapboxgl-ctrl-logo {
+    display: none !important;
+}*/
+
+/* about panel */
+.about-panel {
+  position: relative;
+  height: 60%;
+  width: 45%;
+  left: 30%;
+  top: 10%;
+  background-color: white;
+  border-radius:10px;
+  padding-top:1px;
+  cursor: auto;
+  z-index: 1;
+}
+
+@media screen and (max-width: 720px) {
+    .about-panel {
+        left: 10%;
+        top:10%;
+        width: 80%;
+    }
+}
+
+.about-panel:hover {
+background-color: white;
+}
+
+.about-content{
+  position: absolute;
+  height: 85%;
+  width: 96%;
+  padding-left: 4%;
+  overflow-y: scroll;
+  font-weight: 400;
+  font: 12px/20px 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-weight: normal;
+  font-size: medium;
+  font-family: serif;
+  color: rgba(0,0,0,.75)
+}
+
+.about-content li{
+  /*position: absolute;*/
+  width: 96%;
+}
+
+.about-content h3{
+  font-weight: normal;
+}
+
+.about-content a:hover{
+color: #63b6e5;
+}
+
+.about-content a{
+  color: #3887BE;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.about-black {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.6);
+  cursor: pointer;
+  z-index: 3;
+}
+.about-black:hover {
+  background-color: rgba(0,0,0,0.6);
+}
+
+.menu-button {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 80%;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    font-family: sans-serif;
+    color: black;
+    display: block;
+    padding: 0;
+    z-index: 1;
+    position: absolute;
+    box-sizing: border-box;
+    margin: 0px;
+}
+.menu-button-chevron {
+    top: 10px;
+    right: 131px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    height: 37px;
+    width: 27px;
+}
+.menu-button-compact {
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    background-size: 26px 26px;
+    background-image: url('images/layers-2x.png');
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    height: 44px;
+    width: 44px;
+}
+
+.menu-button-compact:hover {
+   background-color: #f8f8f8;
+}
+
+.menu-button-chevron:hover {
+   background-color: rgba(242, 242, 242, 0.8);
+}
+
+</style>
+ 
+<div id="about"></div>
+<div id="menu-panel"></div>
 <div id="map"></div>
 
 <script>
+// If no WebGL support, redirect to the old site
+if (!mapboxgl.supported()) {
+    window.location.href = "https://fostulbucuresti.github.io/index-l.html" + window.location.hash;
+}
 
+// Default zoom, center, rotation and active layers
+let zoom = 15;
+let center = [26.085298, 44.427037];
+let rotation = 0;
+let lyr_hash = "!a3!p2";
+let activeLayers = {
+    'p1': 'visible',
+    'p2': 'visible',
+    'a2': 'visible'
+}
 
-L.mapbox.marker.createPopup = function(e, r) {
-       if (!e || !e.properties)
-           return "";
-       var i = "";
-       return e.properties.title && (i += '<div class="marker-title">' + e.properties.title + "</div>"),
-       e.properties.thumbnail  && (i+= '<div class="marker-description"><a href="' + e.properties.photo + 
-       '" target="_"><img src="' + e.properties.thumbnail + '"></a>' +
-       (e.properties.author? 'Foto: ' + e.properties.author + (e.properties.year? ", " + e.properties.year : "" ) : "") + 
-       (e.properties.source? '<br>Sursa: ' + e.properties.source + "</div>" : "</div>" )),
-       e.properties.description && (i += '<div class="marker-description">' + e.properties.description + "</div>"),
-       (r || sanitize)(i)
+// Parse address bar for location and layers
+if (window.location.hash !== '') {
+    // Try to restore center, zoom-level and rotation from the URL
+    const hash = window.location.hash.replace('#', '');
+    const parts = hash.split('/');
+    if (parts.length >= 4) {
+        zoom = parseFloat(parts[0]) - 1;
+        center = [parseFloat(parts[2]), parseFloat(parts[1])];
+        if (parts[3] == '' || parts[3][0] == '!') {
+            rotation = 0;
+        } else
+            rotation = parseFloat(parts[3]);
+    }
+    // Then try to parse active map layers
+    const layers = hash.split('!');
+    if (layers.length > 1) {
+        lyr_hash = "";
+        activeLayers = {};
+        for (var i = 1; i < layers.length; i++) {
+            activeLayers[layers[i]] = 'visible';
+            lyr_hash = lyr_hash + "!" + layers[i];
+        }
+    }
+}
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
+// Create the map
+var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: {
+        'version': 8,
+        'glyphs': 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
+        'sources': {
+            'raster-tiles': {
+                'type': 'raster',
+                'tiles': [
+                    'https://1.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
+                    'https://2.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
+                    'https://3.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
+                    'https://4.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
+                ],
+                'tileSize': 256,
+                'maxzoom': 20,
+                'attribution': 'Base map &copy; 1987-2014 <a href="https://developer.here.com">HERE</a> | <strong><a color="rgba(0,60,136,1)" href="#" onclick="showAboutPanel();">Despre</a></strong>'
+            }
+        },
+        'layers': [{
+            'id': 'simple-tiles',
+            'type': 'raster',
+            'source': 'raster-tiles',
+            'minzoom': 0,
+            'maxzoom': 22
+        }]
+    },
+    locale: {
+        'NavigationControl.ZoomIn': 'Mărește',
+        'NavigationControl.ZoomOut': 'Micșorează',
+        'NavigationControl.ResetBearing': 'Rotește către nord (CTRL + mouse pentru rotire aleatoare)',
+        'GeolocateControl.FindMyLocation': 'Localizează-mă',
+    },
+    center: center, // starting position
+    zoom: zoom, // starting zoom
+    bearing: rotation, //starting rotation
+    hash: false,
+    pitchWithRotate: false,
+    minZoom: 3,
+});
+
+// Add navigation buttons
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+// Add geolocate control
+map.addControl(
+    new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        // When active the map will receive updates to the device's location as it changes.
+        trackUserLocation: false,
+        // Draw an arrow next to the location dot to indicate which direction the device is heading.
+        showUserHeading: true
+    }), 'top-left'
+);
+
+//Add full screen control
+//map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}), 'top-left');
+
+// Add scale
+//map.addControl(new mapboxgl.ScaleControl({
+//    maxWidth: 200,
+//    unit: 'metric'
+//}));
+
+// Add map layers
+map.on('load', () => {
+    map.addSource('1927_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.sz06ax2m',
+        'attribution': 'Compagnie Aérienne Française, 1927',
+        'tileSize': 256,
+        'maxzoom': 17
+    });
+    map.addLayer({
+        'id': '1927',
+        'source': '1927_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a1'] === 'undefined') ? 'none' : activeLayers['a1'],
+        }
+    });
+
+    map.addSource('1938_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.wqy4byvp',
+        'attribution': 'Luftwaffe, 1938 (National Archives, courtesy of John Calvin)',
+        'tileSize': 256,
+        'maxzoom': 17
+    });
+    map.addLayer({
+        'id': '1938',
+        'source': '1938_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a2'] === 'undefined') ? 'none' : activeLayers['a2'],
+        }
+    });
+
+    map.addSource('1943_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.6429zeom',
+        'attribution': 'SAAF 60 Squadron, 1943, courtesy of Col. David H. Klaus, USAF, Retired',
+        'tileSize': 256,
+        'maxzoom': 19
+    });
+    map.addLayer({
+        'id': '1943',
+        'source': '1943_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a6'] === 'undefined') ? 'none' : activeLayers['a6'],
+        },
+    });
+    
+    var urls_1966 = ['fostulbucuresti.0cvkcdk1', 'fostulbucuresti.6mflkcc7', 'fostulbucuresti.1lhllfnd',
+                     'fostulbucuresti.dlcbrygd', 'fostulbucuresti.9jqv1qtp', 'fostulbucuresti.10q8y7hq'];
+    for (var i = 0; i < urls_1966.length; i++) {
+        map.addSource('1966_source_' + i, {
+            'type': 'raster',
+            'url': 'mapbox://' + urls_1966[i],
+            'attribution': 'Corona (KH-4A), High Resolution, 1966, USGS',
+            'tileSize': 256,
+            'maxzoom': 18
+        });
+        map.addLayer({
+            'id': '1966_' + i,
+            'source': '1966_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a3'] === 'undefined') ? 'none' : activeLayers['a3'],
+            }
+        });
+    }
+
+    map.addSource('1978_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.2ezig8uc',
+        'attribution': 'KH-9 Hexagon, Low Resolution Mapping, 1978, USGS',
+        'tileSize': 256,
+        'maxzoom': 15,
+    });
+    map.addLayer({
+        'id': '1978',
+        'source': '1978_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a5'] === 'undefined') ? 'none' : activeLayers['a5'],
+        }
+    });
+
+    var urls_1980 = ['fostulbucuresti.cxfce0jt', 'fostulbucuresti.5mitx35s', 'fostulbucuresti.2t5ci0sl']
+    for (var i = 0; i < urls_1980.length; i++) {
+        map.addSource('1980_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1980[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1980, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1980_' + i,
+            'source': '1980_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a7'] === 'undefined') ? 'none' : activeLayers['a7']
+            }
+        });
+    }
+
+    map.addSource('currentstreets_source', {
+    type: 'raster',
+    'tiles': [
+        'https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff',
+        'https://mt2.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff',
+        'https://mt3.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff'
+    ],
+    'attribution' : '&copy; Google',
+    'tileSize': 256
+    });
+    map.addLayer({
+        'id': 'currentstreets',
+        'source': 'currentstreets_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a4'] === 'undefined') ? 'none' : activeLayers['a4']
+        }
+    });
+
+    map.addSource('streets_source', {
+        type: 'vector',
+        url: 'mapbox://fostulbucuresti.ckz7hp9jv0wu820p7bj06yuh6-7eot4'
+    });
+
+    map.addLayer({
+        'id': 'streets_lines',
+        'type': 'line',
+        "source": "streets_source",
+        "source-layer": "strazi",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round",
+            'visibility': (typeof activeLayers['p1'] === 'undefined') ? 'none' : activeLayers['p1']
+        },
+        "paint": {
+            "line-color": "rgba(230, 230, 230, 0.6)",
+            'line-width': [
+                'interpolate', ['linear'],
+                ['zoom'],
+                12, ["*", ["get", "stroke-width"],
+                    ["/", 1, 10]
+                ],
+                14, ["*", ["get", "stroke-width"],
+                    ["/", 1, 2]
+                ],
+                16, ["*", ["get", "stroke-width"],
+                ],
+                20, ["*", ["get", "stroke-width"],
+                    ["*", 1, 4]
+                ]
+            ],
+        }
+    });
+
+    map.addLayer({
+        "id": "streets_labels",
+        "type": "symbol",
+        "source": "streets_source",
+        "source-layer": "strazi",
+        "minzoom": 1,
+        "layout": {
+            "text-field": '{title}',
+            "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+            //"text-font": ["Open Sans Regular"],
+            "text-size": 12,
+            "text-padding": 1,
+            "text-max-angle": 30,
+            "symbol-placement": "line",
+            "text-rotation-alignment": "map",
+            "text-pitch-alignment": "viewport",
+            'visibility': (typeof activeLayers['p1'] === 'undefined') ? 'none' : activeLayers['p1']
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 100%)",
+            "text-halo-color": "hsl(0, 5%, 3%)",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        }
+    });
+
+    map.loadImage('https://a.tiles.mapbox.com/v4/marker/pin-m-camera+1087bf@2x.png?access_token=' + mapboxgl.accessToken, function(error, image) {
+        if (error) throw error;
+        map.addImage('blue-pin', image); //38x55px, shadow adds 5px
+    });
+    map.addSource('photos', {
+        'type': 'geojson',
+        'data': 'geojson/photos.json'
+    });
+    map.addLayer({
+        'id': 'photos_direction',
+        'type': 'fill',
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2']
+        },
+        'source': 'photos',
+        'paint': {
+            'fill-color': 'rgba(99, 182, 229, 0.5)',
+        }
+    });
+    map.addLayer({
+        'id': 'photos_outline',
+        'type': 'line',
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2']
+        },
+        'source': 'photos',
+        'paint': {
+            'line-color': '#7ec9b1',
+            'line-width': 2
+        }
+    });
+    map.addLayer({
+        'id': 'photos_points',
+        'type': 'symbol',
+        'source': 'photos',
+        //'filter': ["match", ["geometry-type"], ["Point"]],
+        'filter': ["==", ["geometry-type"], "Point"],
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2'],
+            'icon-image': 'blue-pin',
+            'icon-allow-overlap': true,
+            'icon-size': 0.5,
+            'symbol-placement': 'point',
+        }
+    });
+
+    // When a click event occurs on a feature in the photo layer,
+    // open a popup at the location of the click, with description
+    // HTML from the click event's properties.
+    var f = function(e) {
+        new mapboxgl.Popup()
+            //.setWidth('auto')
+            .setLngLat(e.lngLat)
+            .setHTML('<div class="marker-title">' + e.features[0].properties.title + "</div>" +
+                '<div class="marker-description"><a href="' + e.features[0].properties.photo +
+                '" target="_"><img src="' + e.features[0].properties.thumbnail + '"></a><br>' +
+                (e.features[0].properties.author ? 'Foto: ' + e.features[0].properties.author + ' ': '') +
+                (e.features[0].properties.year ? e.features[0].properties.year : '') +
+                (e.features[0].properties.source ? '<br>Sursa: ' + e.features[0].properties.source + "</div>" : '</div>') +
+                (e.features[0].properties.description ? '<div class="marker-description">' + e.features[0].properties.description + "</div>" : ''))
+            .setMaxWidth('none')
+            .addTo(map);
+    };
+
+    // Add popups for both points and geometry
+    map.on('click', 'photos_points', f);
+    map.on('click', 'photos_direction', f);
+     
+    // Change the cursor to a pointer when
+    // the mouse is over the photos layer.
+    map.on('mouseenter', 'photos_points', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+     
+    // Change the cursor back to a pointer
+    // when it leaves the photos layer.
+    map.on('mouseleave', 'photos_points', () => {
+    map.getCanvas().style.cursor = '';
+    });
+});
+
+// Create the hash for layers
+function updateLayersHash() {
+    lyr_hash = '';
+    for (var key in activeLayers) {
+        if (activeLayers[key] == 'visible') {
+            lyr_hash = lyr_hash + '!' + key;
+        }
+    }
+    location.replace(getCoordsHash() + '/' + lyr_hash);
+}
+
+// Create the hash for coordinates, rotation and zoom
+function getCoordsHash() {
+    const center = map.getCenter();
+    const hash =
+        '#' +
+        (map.getZoom() + 1).toFixed(2) +
+        '/' +
+        center.lat.toFixed(5) +
+        '/' +
+        center.lng.toFixed(5) +
+        '/' +
+        Math.round(10 * map.getBearing()) / 10;
+    return (hash);
 };
 
-var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
-L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
+// Update hash function
+let shouldUpdate = true;
 
-var drawnItems = L.geoJson()
-map.addLayer(drawnItems);
-
-//Add show location
-L.control.locate().addTo(map);
-
-//Load Nokia HERE sattelite images
-var HERE_satelliteDay = L.tileLayer('https://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-//var HERE_hybridDay = L.tileLayer('https://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-//var HERE_Streets = L.tileLayer('https://{s}.aerial.maps.ls.hereapi.com/maptile/2.1/streettile/newest/hybrid.grey.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA', {
-    attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="https://developer.here.com">HERE</a>',
-    subdomains: '1234',
-    mapID: 'newest',
-    app_id: 'szl0C8iCbelZ2Isouvf1',
-    app_code: 'WJUAfRBVzccNZ-bdH-oyUA',
-    base: 'aerial',
-    minZoom: 0,
-    maxZoom: 20
-}).addTo(map);
-
-//Current streets layer
-var currentStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff', {
-    attribution: ' Streets layer &copy;Google',
-    subdomains: '1234',
-    minZoom: 0,
-    maxZoom: 20
-});
-
-//Historical streets layer
-//var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
-var streetsLayer = L.tileLayer('https://api.mapbox.com/styles/v1/fostulbucuresti/ckzg6opem008r14p9ef69sh6y/tiles/256/{z}/{x}/{y}@2x?access_token=' + L.mapbox.accessToken, {
-    minZoom: 0,
-    maxZoom: 20
-});
-
-//Photos layer
-var photoLayer = L.mapbox.featureLayer()
-    .loadURL('geojson/photos.json');
-
-//Historical aerial tiles
-var twentySeven = L.mapbox.tileLayer('fostulbucuresti.sz06ax2m',{attribution: 'Compagnie Aérienne Française 1927', maxNativeZoom: 17, maxZoom: 19});
-var thirtyEight = L.mapbox.tileLayer('fostulbucuresti.wqy4byvp',{attribution: 'Luftwaffe 1938 (National Archives courtesy of John Calvin)', maxNativeZoom: 17, maxZoom: 19});
-var seventyEight = L.mapbox.tileLayer('fostulbucuresti.2ezig8uc',{attribution: 'KH-9 Lower Resolution Mapping 1978', maxNativeZoom: 15, maxZoom: 19});
-var fortyThree = L.mapbox.tileLayer('fostulbucuresti.6429zeom',{attribution: 'SAAF 60 squadron courtesy of Col. David H. Klaus, USAF, Retired', maxNativeZoom: 19, maxZoom: 20});
-
-//bounds: [ [N, E], [S, W] ]
-var eightyGroup = L.layerGroup();
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostul-bucuresti.b0mzznom/{z}/{x}/{y}@2x.png?access_token=pk.eyJ1IjoiZm9zdHVsLWJ1Y3VyZXN0aSIsImEiOiJja3hrcDI5ZGc0dXpkMnJvNTNneXByd3ZsIn0.N9IWHIlyFE6NufJ5CruuOw', { maxNativeZoom: 17, maxZoom: 19, bounds: [ [44.464724099669255, 26.288328876157838], [44.403296025412445, 26.003009670386557] ], subdomains: 'abc', attribution: 'KH-9 High Resolution 1980' }).addTo(eightyGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.5mitx35s/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 19, bounds: [ [44.5285966208057, 26.288328876157838], [44.464724099669255, 26.003009670386557] ], subdomains: 'abc', attribution: 'KH-9 High Resolution 1980' }).addTo(eightyGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.2t5ci0sl/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 19, bounds: [ [44.59239917662877, 26.288328876157838], [44.5285966208057, 26.003009670386557] ], subdomains: 'abc', attribution: 'KH-9 High Resolution 1980'}).addTo(eightyGroup);
-
-var sixtysixGroup = L.layerGroup();
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.0cvkcdk1/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.588085565, 26.082220276529345], [44.50050132140829, 25.957811008000004] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.6mflkcc7/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.588085565, 26.248596309391985], [44.50050502897149, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.1lhllfnd/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.500502646, 26.082216905786066], [44.412919984086365, 25.93430800000001] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.dlcbrygd/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.500502646, 26.22574154685466], [44.41291810511102, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.9jqv1qtp/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.412919726000005, 26.082221997428963], [44.339799256720084, 25.915798171000006] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-L.tileLayer('https://{s}.tiles.mapbox.com/v4/fostulbucuresti.10q8y7hq/{z}/{x}/{y}@2x.png?access_token=' + L.mapbox.accessToken, { maxNativeZoom: 17, maxZoom: 20, bounds: [ [44.412919726000005, 26.202119625032303], [44.33979924694459, 26.082220170000003] ], subdomains: 'abc', attribution: 'CORONA High Resolution 1966' }).addTo(sixtysixGroup);
-
-var layers = document.getElementById('menu-ui');
-
-//Parse active layers from location
-var activeLayers = {};
-layersString = '';
-
-var locationString = location.hash;
-if(locationString.indexOf('#') === 0) {
-    locationString = locationString.substr(1);
+const updateCoordHash = function() {
+    if (!shouldUpdate) {
+        // do not update the URL when the view was changed in the 'popstate' handler
+        shouldUpdate = true;
+        return;
+    }
+    location.replace(getCoordsHash() + "/" + lyr_hash);
 }
-parseLayers(locationString);
-addAllLayers();
 
-var infoButton = L.control.infoButton({linkTitle: 'Despre', title: '<font face="sans-serif"><h2>Despre</h2></font>', position: 'bottomright'}).addTo(map);
+// Update hash after moving the map
+map.on('moveend', updateCoordHash);
 
-function addLayer(layer, name, zIndex, sName) {
-    layer.setZIndex(zIndex);
-    if ( activeLayers[sName] == 'active' ) { layer.addTo(map);};
+// Define all the layers
+const toggleableLayers = [
+    ['1927', 'a1', ['1927']],
+    ['1938', 'a2', ['1938']],
+    ['1943', 'a6', ['1943']],
+    ['1966', 'a3', ['1966_0', '1966_1', '1966_2', '1966_3', '1966_4', '1966_5']],
+    ['1978', 'a5', ['1978']],
+    ['1980', 'a7', ['1980_0', '1980_1', '1980_2']],
+    ['Străzi prezent', 'a4', ['currentstreets']],
+    //['Străzi distruse', 'p1', ['streets']],
+    ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
+    ['Fotografii', 'p2', ['photos_points', 'photos_direction', 'photos_outline']]
+];
 
-    // Create a simple layer switcher that
-    // toggles layers on and off.
-    var link = document.createElement('a');
-        link.href = '#';
-        link.className = activeLayers[sName];
-        link.innerHTML = name;
-        link.id = sName;
+menu = document.createElement('nav');
+menu.id = 'menu';
+// Set up the corresponding toggle button for each layer.
+toggleableLayers.forEach(layer => {
 
+    // Create a link.
+    const link = document.createElement('a');
+    link.id = layer[0];
+    link.href = '#';
+    link.textContent = layer[0];
+    if (activeLayers[layer[1]] === 'undefined' || activeLayers[layer[1]] != 'visible') {
+        link.className = '';
+    } else {
+        link.className = 'active';
+    }
+
+    // Show or hide layer when the toggle is clicked.
     link.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
 
-        if (map.hasLayer(layer)) {
-            map.removeLayer(layer);
+
+        var visibility = map.getLayoutProperty(layer[2][0], 'visibility');
+        // Toggle layer visibility by changing the layout object's visibility property
+        if (visibility === 'visible') {
             this.className = '';
-            activeLayers[this.id] = '';
-            setLayersString();
+            // A layer can contain more tile layers
+            for (layercount in layer[2]) {
+                map.setLayoutProperty(layer[2][layercount], 'visibility', 'none');
+            }
+            activeLayers[layer[1]] = 'none';
+            updateLayersHash();
         } else {
-            map.addLayer(layer);
             this.className = 'active';
-            activeLayers[this.id] = 'active';
-            setLayersString();
-        }
+            for (layercount in layer[2]) {
+                map.setLayoutProperty(layer[2][layercount], 'visibility', 'visible');
+            }
+            activeLayers[layer[1]] = 'visible';
+            updateLayersHash();
+        };
     };
 
-    layers.appendChild(link);
-}
+    //const layersMenu = document.getElementById('menu');
+    //layersMenu.appendChild(link);
+    menu.appendChild(link);
+});
 
-function addAllLayers () {
-    addLayer(twentySeven,   '1927', 1, 'a1');
-    addLayer(thirtyEight,   '1938', 2, 'a2');
-    addLayer(fortyThree,    '1943', 3, 'a6');
-    addLayer(sixtysixGroup, '1966', 4, 'a3');
-    addLayer(seventyEight,  '1978', 5, 'a5');
-    addLayer(eightyGroup,   '1980', 6, 'a7');
-    addLayer(currentStreets,   'Străzi prezent',  7, 'a4');
-    addLayer(streetsLayer,     'Străzi distruse', 8, 'p1');
-    addLayer(photoLayer,       'Fotografii',      9, 'p2');
-}
+const layersMenu = document.getElementById('menu-panel');
+layersMenu.appendChild(menu);
 
-function parseLayers (locationString) {
-    activeLayers = { 'a1' : '',
-                     'a2' : '',
-                     'a3' : '',
-                     'a4' : '',
-                     'a5' : '',
-                     'a6' : '',
-                     'a7' : '',
-                     'p1' : '',
-                     'p2' : ''
-    };
-    layersString = '';
-
-    var args = locationString.split("!");
-    if (args.length > 1) {
-        for( var i = 1; i < args.length; i++) {
-            activeLayers[args[i]] = 'active';
-            layersString = layersString + '!' + args[i];
-        }
+//Create button to hide/show layers
+const button = document.createElement('button');
+button.className = "menu-button menu-button-chevron";
+button.textContent = "»"
+button.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    menu = document.getElementById('menu');
+    if (this.className == 'menu-button menu-button-chevron') {
+        this.className = 'menu-button menu-button-compact';
+        this.textContent = ""
+        menu.style.visibility = 'hidden';
     } else {
-        //Default layers
-        activeLayers['a2'] = 'active';
-        activeLayers['p1'] = 'active';
-        activeLayers['p2'] = 'active';
-        layersString = "!a2!p1!p2";
+        menu = document.getElementById('menu');
+        menu.style.visibility = 'visible';
+        this.className = "menu-button menu-button-chevron";
+        this.textContent = "»"
     }
 }
+layersMenu.appendChild(button);
 
-function removeLayers () {
-    // remove menu
-    for (var key in activeLayers) {
-        var link = document.getElementById(key);
-        link.parentNode.removeChild(link);
-    }
-    // remove layers
-    map.removeLayer(thirtyeighGroup);
-    map.removeLayer(layerGroup);
-    map.removeLayer(streetsLayer);
-    map.removeLayer(photoLayer);
+// Create About panel
+const text = document.createElement('p');
+text.innerHTML = '<div class="about-content"><font face="sans-serif">\
+<h3>Despre</h3>\
+<p>Contact: fostulbucuresti@gmail.com</p>\
+<p>Rotire hartă: <i>Control + click</i> sau <i>click dreapta</i></p>\
+Sursele fotografiilor aeriene:\
+<ul style="list-style: round;">\
+<li><b>1927</b> - Compagnie aérienne française (CAF), Biblioteca Academiei, obținute prin amabilitatea lui <a href="http://www.costingheorghe.ro/thenow/" target="_blank">Costin Gheorghe</a></li>\
+<li><b>1938, vara</b> - Dosar german de obiective militare din România, National Archives, S.U.A., obținute prin amabilitatea lui John Calvin</li>\
+<li><b>1943, 19 august</b> - Zboruri de recunoaștere ale escadrilei <a href="http://www.saairforce.co.za/the-airforce/squadrons/12/60-squadron" target="_blank">60 SAAF</a> (South African Air Force), US Air Force Historical Research Center, scanate de către <a href="http://www.low-level-ploesti.org/" target="_blank">Col. David H. Klaus, USAF, Retired</a>. Obținute prin amabilitatea lui <a href="http://macristudio.com" target="_blank">Ionuț Macri</a>.</li>\
+<li><b>1966, 12 iulie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/Corona_(satellite)" target="_blank"> Corona (KH-4A)</a>, U.S. Geological Survey, obținute prin amabilitatea lui Ionuț Sandric</li>\
+<li><b>1978, 30 martie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
+<li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul></font>\
+</p></font></div>';
+
+const element = document.createElement('div');
+element.className = 'about-black';
+const about = document.createElement('div');
+about.className = 'about-panel'
+
+element.appendChild(about);
+about.appendChild(text);
+
+const aboutPanel = document.getElementById('about');
+
+about.onclick = function(e) {
+    e.stopPropagation();
+};
+
+element.onclick = function(e) {
+    aboutPanel.removeChild(element);
+    e.stopPropagation();
+    return false;
 }
 
-function setLayersString() {
-    layersString = '';
-    for (var key in activeLayers) {
-        if (activeLayers[key] != '') {
-            layersString = layersString + '!' + key;
-        }
-    }
-    location.replace(hash.lastCoords + '/' + layersString);
-    hash.lastHash = hash.lastCoords + '/' + layersString;
+// Define function that shows the panel
+function showAboutPanel() {
+    aboutPanel.appendChild(element);
 }
-
-var hash = new L.Hash(map);
 
 //GoogleAnaytics
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -282,5 +768,6 @@ var hash = new L.Hash(map);
   ga('send', 'pageview');
 
 </script>
+
 </body>
 </html>
