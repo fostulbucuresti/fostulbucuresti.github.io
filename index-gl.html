@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>București GL</title>
+<title>București</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
@@ -217,9 +217,9 @@ color: #63b6e5;
 
 <script>
 // If no WebGL support, redirect to the old site
-/*if (!mapboxgl.supported()) {
-    window.location.href = "https://fostulbucuresti.github.io" + window.location.hash;
-}*/
+if (!mapboxgl.supported()) {
+    window.location.href = "https://fostulbucuresti.github.io/index-l.html" + window.location.hash;
+}
 
 // Default zoom, center, rotation and active layers
 let zoom = 15;
@@ -257,7 +257,6 @@ if (window.location.hash !== '') {
     }
 }
 
-//var map = new maplibregl.Map({
 mapboxgl.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
 // Create the map
 var map = new mapboxgl.Map({
@@ -295,7 +294,7 @@ var map = new mapboxgl.Map({
     },
     center: center, // starting position
     zoom: zoom, // starting zoom
-    bearing: rotation,
+    bearing: rotation, //starting rotation
     hash: false,
     pitchWithRotate: false,
     minZoom: 3,
@@ -450,27 +449,11 @@ map.on('load', () => {
         }
     });
 
-    /*map.addSource('streets_source', {
-        'type': 'raster',
-        'url': 'mapbox://fostulbucuresti.peqwvsed',
-        'tileSize': 256
-    });
-    map.addLayer({
-        'id': 'streets',
-        'source': 'streets_source',
-        'type': 'raster',
-        'layout': {
-            'visibility': (typeof activeLayers['p1'] === 'undefined') ? 'none' : activeLayers['p1']
-        }
-    });*/
-
     map.addSource('streets_source', {
         type: 'vector',
         url: 'mapbox://fostulbucuresti.ckz7hp9jv0wu820p7bj06yuh6-7eot4'
     });
 
-    baseWidth = 4;
-    baseZoom = 16;
     map.addLayer({
         'id': 'streets_lines',
         'type': 'line',
@@ -484,13 +467,18 @@ map.on('load', () => {
         "paint": {
             "line-color": "rgba(230, 230, 230, 0.6)",
             'line-width': [
-                'interpolate', ['exponential', 2],
+                'interpolate', ['linear'],
                 ['zoom'],
-                10, ["*", ["get", "stroke-width"],
-                    ["^", 2, -6]
+                12, ["*", ["get", "stroke-width"],
+                    ["/", 1, 10]
                 ],
-                24, ["*", ["get", "stroke-width"],
-                    ["^", 2, 8]
+                14, ["*", ["get", "stroke-width"],
+                    ["/", 1, 2]
+                ],
+                16, ["*", ["get", "stroke-width"],
+                ],
+                20, ["*", ["get", "stroke-width"],
+                    ["*", 1, 4]
                 ]
             ],
         }
@@ -734,7 +722,7 @@ const text = document.createElement('p');
 text.innerHTML = '<div class="about-content"><font face="sans-serif">\
 <h3>Despre</h3>\
 <p>Contact: fostulbucuresti@gmail.com</p>\
-<p>Rotire hartă: <i>CTRL + mouse</i></p>\
+<p>Rotire hartă: <i>Control + click</i> sau <i>click dreapta</i></p>\
 Sursele fotografiilor aeriene:\
 <ul style="list-style: round;">\
 <li><b>1927</b> - Compagnie aérienne française (CAF), Biblioteca Academiei, obținute prin amabilitatea lui <a href="http://www.costingheorghe.ro/thenow/" target="_blank">Costin Gheorghe</a></li>\

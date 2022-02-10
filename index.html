@@ -128,9 +128,12 @@ var currentStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y
     maxZoom: 20
 });
 
-
 //Historical streets layer
-var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
+//var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed');
+var streetsLayer = L.tileLayer('https://api.mapbox.com/styles/v1/fostulbucuresti/ckzg6opem008r14p9ef69sh6y/tiles/256/{z}/{x}/{y}@2x?access_token=' + L.mapbox.accessToken, {
+    minZoom: 0,
+    maxZoom: 20
+});
 
 //Photos layer
 var photoLayer = L.mapbox.featureLayer()
