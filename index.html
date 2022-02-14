@@ -233,6 +233,7 @@ let activeLayers = {
     'p2': 'visible',
     'a2': 'visible'
 }
+let current_street_layers = [];
 
 // Parse address bar for location and layers
 if (window.location.hash !== '') {
@@ -261,33 +262,9 @@ if (window.location.hash !== '') {
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
 // Create the map
-var map = new mapboxgl.Map({
-    container: 'map', // container id
-    style: {
-        'version': 8,
-        'glyphs': 'mapbox://fonts/mapbox/{fontstack}/{range}.pbf',
-        'sources': {
-            'raster-tiles': {
-                'type': 'raster',
-                'tiles': [
-                    'https://1.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
-                    'https://2.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
-                    'https://3.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
-                    'https://4.aerial.maps.cit.api.here.com/maptile/2.1/maptile/newest/satellite.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA',
-                ],
-                'tileSize': 256,
-                'maxzoom': 20,
-                'attribution': 'Base map &copy; 1987-2014 <a href="https://developer.here.com">HERE</a> | <strong><a color="rgba(0,60,136,1)" href="#" onclick="showAboutPanel();">Despre</a></strong>'
-            }
-        },
-        'layers': [{
-            'id': 'simple-tiles',
-            'type': 'raster',
-            'source': 'raster-tiles',
-            'minzoom': 0,
-            'maxzoom': 22
-        }]
-    },
+const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    style: 'mapbox://styles/fostulbucuresti/ckzl4qmho001o14mktp00jckq?optimize=true',
     locale: {
         'NavigationControl.ZoomIn': 'Mărește',
         'NavigationControl.ZoomOut': 'Micșorează',
@@ -300,6 +277,7 @@ var map = new mapboxgl.Map({
     hash: false,
     pitchWithRotate: false,
     minZoom: 3,
+    customAttribution: '<strong><a href="#" onclick="showAboutPanel();">Despre site</a></strong>'
 });
 
 // Add navigation buttons
@@ -329,6 +307,16 @@ map.addControl(
 
 // Add map layers
 map.on('load', () => {
+    // Get current street layers
+    const layers = map.getStyle().layers;
+    for (const layer of layers) {
+        if (layer.id != "background" && layer.id != "satellite") {
+            current_street_layers.push(layer.id);
+            map.setLayoutProperty(layer.id, 'visibility', (typeof activeLayers['a4'] === 'undefined') ? 'none' : activeLayers['a4']);
+        }
+    }
+    first_street_layer = current_street_layers[0];
+
     map.addSource('1927_source', {
         'type': 'raster',
         'url': 'mapbox://fostulbucuresti.sz06ax2m',
@@ -343,7 +331,7 @@ map.on('load', () => {
         'layout': {
             'visibility': (typeof activeLayers['a1'] === 'undefined') ? 'none' : activeLayers['a1'],
         }
-    });
+    }, first_street_layer);
 
     map.addSource('1938_source', {
         'type': 'raster',
@@ -359,7 +347,7 @@ map.on('load', () => {
         'layout': {
             'visibility': (typeof activeLayers['a2'] === 'undefined') ? 'none' : activeLayers['a2'],
         }
-    });
+    }, first_street_layer);
 
     map.addSource('1943_source', {
         'type': 'raster',
@@ -375,7 +363,7 @@ map.on('load', () => {
         'layout': {
             'visibility': (typeof activeLayers['a6'] === 'undefined') ? 'none' : activeLayers['a6'],
         },
-    });
+    }, first_street_layer);
     
     var urls_1966 = ['fostulbucuresti.0cvkcdk1', 'fostulbucuresti.6mflkcc7', 'fostulbucuresti.1lhllfnd',
                      'fostulbucuresti.dlcbrygd', 'fostulbucuresti.9jqv1qtp', 'fostulbucuresti.10q8y7hq'];
@@ -394,7 +382,7 @@ map.on('load', () => {
             'layout': {
                 'visibility': (typeof activeLayers['a3'] === 'undefined') ? 'none' : activeLayers['a3'],
             }
-        });
+        }, first_street_layer);
     }
 
     map.addSource('1978_source', {
@@ -411,7 +399,7 @@ map.on('load', () => {
         'layout': {
             'visibility': (typeof activeLayers['a5'] === 'undefined') ? 'none' : activeLayers['a5'],
         }
-    });
+    }, first_street_layer);
 
     var urls_1980 = ['fostulbucuresti.cxfce0jt', 'fostulbucuresti.5mitx35s', 'fostulbucuresti.2t5ci0sl']
     for (var i = 0; i < urls_1980.length; i++) {
@@ -429,27 +417,8 @@ map.on('load', () => {
             'layout': {
                 'visibility': (typeof activeLayers['a7'] === 'undefined') ? 'none' : activeLayers['a7']
             }
-        });
+        }, first_street_layer);
     }
-
-    map.addSource('currentstreets_source', {
-    type: 'raster',
-    'tiles': [
-        'https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff',
-        'https://mt2.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff',
-        'https://mt3.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff'
-    ],
-    'attribution' : '&copy; Google',
-    'tileSize': 256
-    });
-    map.addLayer({
-        'id': 'currentstreets',
-        'source': 'currentstreets_source',
-        'type': 'raster',
-        'layout': {
-            'visibility': (typeof activeLayers['a4'] === 'undefined') ? 'none' : activeLayers['a4']
-        }
-    });
 
     map.addSource('streets_source', {
         type: 'vector',
@@ -642,7 +611,7 @@ const toggleableLayers = [
     ['1966', 'a3', ['1966_0', '1966_1', '1966_2', '1966_3', '1966_4', '1966_5']],
     ['1978', 'a5', ['1978']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2']],
-    ['Străzi prezent', 'a4', ['currentstreets']],
+    ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
     ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
     ['Fotografii', 'p2', ['photos_points', 'photos_direction', 'photos_outline']]
