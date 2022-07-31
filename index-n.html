@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="description" content="Fotografii aeriene București 1927, 1938,
+1943, 1966, 1978, 1980">
+<title>București</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+</head>
+<body>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+#menu-panel{
+/*overflow-y: hidden;
+display: flex;
+flex-direction: column;*/
+max-height: calc(100% - 42px);
+}
+
+#menu {
+  background: #fff;
+  position: absolute;
+  z-index: 1;
+  top: 10px;
+  right: 10px;
+  border-radius: 3px;
+  width: 120px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  font-family: 'Open Sans', sans-serif;
+  max-height: inherit;
+  overflow-y: auto;*/
+}
+ 
+#menu a {
+  font-size: 13px;
+  color: #404040;
+  display: block;
+  margin: 0;
+  padding: 10px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+text-align: center;
+}
+
+#menu a:first-child {
+  border-radius:2px 2px 0 0;
+}
+#menu a:last-child {
+  border:none;
+  border-radius:0 0 2px 2px;
+}
+
+#menu a:hover {
+  background-color: #f8f8f8;
+  color: #404040;
+}
+ 
+#menu a.active {
+  background-color: #3887be;
+  color: #ffffff;
+}
+ 
+#menu a.active:hover {
+  background: #3074a4;
+}
+
+.mapboxgl-popup {
+  max-width: 400px;
+}
+
+.marker-title {
+  /*width: auto !important;*/
+  font: 12px/20px 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-weight: 900;
+  color: rgba(0,0,0,.75);
+}
+
+.marker-description a {
+  color: #3887BE;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.marker-description a:focus {
+  outline: none;
+}
+
+/*.mapboxgl-ctrl-logo {
+    display: none !important;
+}*/
+
+/* about panel */
+.about-panel {
+  position: relative;
+  height: 60%;
+  width: 45%;
+  left: 30%;
+  top: 10%;
+  background-color: white;
+  border-radius:10px;
+  padding-top:1px;
+  cursor: auto;
+  z-index: 1;
+}
+
+@media screen and (max-width: 720px) {
+    .about-panel {
+        left: 10%;
+        top:10%;
+        width: 80%;
+    }
+}
+
+.about-panel:hover {
+background-color: white;
+}
+
+.about-content{
+  position: absolute;
+  height: 85%;
+  width: 96%;
+  padding-left: 4%;
+  overflow-y: scroll;
+  font-weight: 400;
+  font: 12px/20px 'Helvetica Neue',Arial,Helvetica,sans-serif;
+  font-weight: normal;
+  font-size: medium;
+  font-family: serif;
+  color: rgba(0,0,0,.75)
+}
+
+.about-content li{
+  /*position: absolute;*/
+  width: 96%;
+}
+
+.about-content h3{
+  font-weight: normal;
+}
+
+.about-content a:hover{
+color: #63b6e5;
+}
+
+.about-content a{
+  color: #3887BE;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.about-black {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0,0,0,0.6);
+  cursor: pointer;
+  z-index: 3;
+}
+.about-black:hover {
+  background-color: rgba(0,0,0,0.6);
+}
+
+.menu-button {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-size: 80%;
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 14px;
+    text-align: center;
+    font-family: sans-serif;
+    color: black;
+    display: block;
+    padding: 0;
+    z-index: 1;
+    position: absolute;
+    box-sizing: border-box;
+    margin: 0px;
+}
+.menu-button-chevron {
+    top: 10px;
+    right: 131px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    height: 37px;
+    width: 27px;
+}
+.menu-button-compact {
+    top: 10px;
+    right: 10px;
+    background-color: white;
+    background-size: 26px 26px;
+    background-image: url('images/layers-2x.png');
+    border-radius: 5px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    height: 44px;
+    width: 44px;
+}
+
+.menu-button-compact:hover {
+   background-color: #f8f8f8;
+}
+
+.menu-button-chevron:hover {
+   background-color: rgba(242, 242, 242, 0.8);
+}
+
+</style>
+ 
+<div id="about"></div>
+<div id="menu-panel"></div>
+<div id="map"></div>
+
+<script>
+// If no WebGL support, redirect to the old site
+if (!mapboxgl.supported()) {
+    window.location.href = "https://fostulbucuresti.github.io/index-l.html" + window.location.hash;
+}
+
+// Default zoom, center, rotation and active layers
+let zoom = 15;
+let center = [26.085298, 44.427037];
+let rotation = 0;
+let lyr_hash = "!a3!p2";
+let activeLayers = {
+    'p1': 'visible',
+    'p2': 'visible',
+    'a2': 'visible'
+}
+let current_street_layers = [];
+
+// Parse address bar for location and layers
+if (window.location.hash !== '') {
+    // Try to restore center, zoom-level and rotation from the URL
+    const hash = window.location.hash.replace('#', '');
+    const parts = hash.split('/');
+    if (parts.length >= 4) {
+        zoom = parseFloat(parts[0]) - 1;
+        center = [parseFloat(parts[2]), parseFloat(parts[1])];
+        if (parts[3] == '' || parts[3][0] == '!') {
+            rotation = 0;
+        } else
+            rotation = parseFloat(parts[3]);
+    }
+    // Then try to parse active map layers
+    const layers = hash.split('!');
+    if (layers.length > 1) {
+        lyr_hash = "";
+        activeLayers = {};
+        for (var i = 1; i < layers.length; i++) {
+            activeLayers[layers[i]] = 'visible';
+            lyr_hash = lyr_hash + "!" + layers[i];
+        }
+    }
+}
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6Ii1wcHhHMlUifQ.PNvu3KPFdR4WWx6Yk4sCYw';
+// Create the map
+const map = new mapboxgl.Map({
+    container: 'map', // container ID
+    style: 'mapbox://styles/fostulbucuresti/ckzl4qmho001o14mktp00jckq?optimize=true',
+    locale: {
+        'NavigationControl.ZoomIn': 'Mărește',
+        'NavigationControl.ZoomOut': 'Micșorează',
+        'NavigationControl.ResetBearing': 'Rotește către nord (CTRL + mouse pentru rotire aleatoare)',
+        'GeolocateControl.FindMyLocation': 'Localizează-mă',
+    },
+    center: center, // starting position
+    zoom: zoom, // starting zoom
+    bearing: rotation, //starting rotation
+    hash: false,
+    pitchWithRotate: false,
+    minZoom: 3,
+    customAttribution: '<strong><a href="#" onclick="showAboutPanel();">Despre site</a></strong>'
+});
+
+// Add navigation buttons
+map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+// Add geolocate control
+map.addControl(
+    new mapboxgl.GeolocateControl({
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        // When active the map will receive updates to the device's location as it changes.
+        trackUserLocation: false,
+        // Draw an arrow next to the location dot to indicate which direction the device is heading.
+        showUserHeading: true
+    }), 'top-left'
+);
+
+//Add full screen control
+//map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}), 'top-left');
+
+// Add scale
+//map.addControl(new mapboxgl.ScaleControl({
+//    maxWidth: 200,
+//    unit: 'metric'
+//}));
+
+// Add map layers
+map.on('load', () => {
+    // Get current street layers
+    const layers = map.getStyle().layers;
+    for (const layer of layers) {
+        if (layer.id != "background" && layer.id != "satellite") {
+            current_street_layers.push(layer.id);
+            map.setLayoutProperty(layer.id, 'visibility', (typeof activeLayers['a4'] === 'undefined') ? 'none' : activeLayers['a4']);
+        }
+    }
+    first_street_layer = current_street_layers[0];
+
+    map.addSource('1927_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.sz06ax2m',
+        'attribution': 'Compagnie Aérienne Française, 1927',
+        'tileSize': 256,
+        'maxzoom': 17
+    });
+    map.addLayer({
+        'id': '1927',
+        'source': '1927_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a1'] === 'undefined') ? 'none' : activeLayers['a1'],
+        }
+    }, first_street_layer);
+
+    map.addSource('1938_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.wqy4byvp',
+        'attribution': 'Luftwaffe, 1938 (National Archives, courtesy of John Calvin)',
+        'tileSize': 256,
+        'maxzoom': 17
+    });
+    map.addLayer({
+        'id': '1938',
+        'source': '1938_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a2'] === 'undefined') ? 'none' : activeLayers['a2'],
+        }
+    }, first_street_layer);
+
+    map.addSource('1943_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.6429zeom',
+        'attribution': 'SAAF 60 Squadron, 1943, courtesy of Col. David H. Klaus, USAF, Retired',
+        'tileSize': 256,
+        'maxzoom': 19
+    });
+    map.addLayer({
+        'id': '1943',
+        'source': '1943_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a6'] === 'undefined') ? 'none' : activeLayers['a6'],
+        },
+    }, first_street_layer);
+    
+    var urls_1966 = ['fostulbucuresti.0cvkcdk1', 'fostulbucuresti.6mflkcc7', 'fostulbucuresti.1lhllfnd',
+                     'fostulbucuresti.dlcbrygd', 'fostulbucuresti.9jqv1qtp', 'fostulbucuresti.10q8y7hq'];
+    for (var i = 0; i < urls_1966.length; i++) {
+        map.addSource('1966_source_' + i, {
+            'type': 'raster',
+            'url': 'mapbox://' + urls_1966[i],
+            'attribution': 'Corona (KH-4A), High Resolution, 1966, USGS',
+            'tileSize': 256,
+            'maxzoom': 18
+        });
+        map.addLayer({
+            'id': '1966_' + i,
+            'source': '1966_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a3'] === 'undefined') ? 'none' : activeLayers['a3'],
+            }
+        }, first_street_layer);
+    };
+
+    var urls_1976 = ['fostulbucuresti.5uk1vt68', 'fostulbucuresti.8lvkco9y', 'fostulbucuresti.52ptpwzs'];
+    for (var i = 0; i < urls_1976.length; i++) {
+        map.addSource('1976_source_' + i, {
+            'type': 'raster',
+            'url': 'mapbox://' + urls_1976[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1976, USGS',
+            'tileSize': 256,
+            'maxzoom': 18
+        });
+        map.addLayer({
+            'id': '1976_' + i,
+            'source': '1976_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a8'] === 'undefined') ? 'none' : activeLayers['a8'],
+            }
+        }, first_street_layer);
+    }
+
+    var urls_1977 = ['fostulbucuresti.5pd5vijv', 'fostulbucuresti.cc6fi3yi']
+    for (var i = 0; i < urls_1977.length; i++) {
+        map.addSource('1977_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1977[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1977, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1977_' + i,
+            'source': '1977_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a9'] === 'undefined') ? 'none' : activeLayers['a9']
+            }
+        }, first_street_layer);
+    }
+
+    map.addSource('1978_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.2ezig8uc',
+        'attribution': 'KH-9 Hexagon, Low Resolution Mapping, 1978, USGS',
+        'tileSize': 256,
+        'maxzoom': 15,
+    });
+    map.addLayer({
+        'id': '1978',
+        'source': '1978_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a5'] === 'undefined') ? 'none' : activeLayers['a5'],
+        }
+    }, first_street_layer);
+
+    var urls_1980 = ['fostulbucuresti.cxfce0jt', 'fostulbucuresti.5mitx35s', 'fostulbucuresti.2t5ci0sl']
+    for (var i = 0; i < urls_1980.length; i++) {
+        map.addSource('1980_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1980[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1980, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1980_' + i,
+            'source': '1980_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a7'] === 'undefined') ? 'none' : activeLayers['a7']
+            }
+        }, first_street_layer);
+    }
+
+    map.addSource('streets_source', {
+        type: 'vector',
+        url: 'mapbox://fostulbucuresti.ckz7hp9jv0wu820p7bj06yuh6-7eot4'
+    });
+
+    map.addLayer({
+        'id': 'streets_lines',
+        'type': 'line',
+        "source": "streets_source",
+        "source-layer": "strazi",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round",
+            'visibility': (typeof activeLayers['p1'] === 'undefined') ? 'none' : activeLayers['p1']
+        },
+        "paint": {
+            "line-color": "rgba(230, 230, 230, 0.6)",
+            'line-width': [
+                'interpolate', ['linear'],
+                ['zoom'],
+                12, ["*", ["get", "stroke-width"],
+                    ["/", 1, 10]
+                ],
+                14, ["*", ["get", "stroke-width"],
+                    ["/", 1, 2]
+                ],
+                16, ["*", ["get", "stroke-width"],
+                ],
+                20, ["*", ["get", "stroke-width"],
+                    ["*", 1, 4]
+                ]
+            ],
+        }
+    });
+
+    map.addLayer({
+        "id": "streets_labels",
+        "type": "symbol",
+        "source": "streets_source",
+        "source-layer": "strazi",
+        "minzoom": 1,
+        "layout": {
+            "text-field": '{title}',
+            "text-font": ["DIN Pro Medium", "Arial Unicode MS Regular"],
+            //"text-font": ["Open Sans Regular"],
+            "text-size": 12,
+            "text-padding": 1,
+            "text-max-angle": 30,
+            "symbol-placement": "line",
+            "text-rotation-alignment": "map",
+            "text-pitch-alignment": "viewport",
+            'visibility': (typeof activeLayers['p1'] === 'undefined') ? 'none' : activeLayers['p1']
+        },
+        "paint": {
+            "text-color": "hsl(0, 0%, 100%)",
+            "text-halo-color": "hsl(0, 5%, 3%)",
+            "text-halo-width": 1,
+            "text-halo-blur": 0.5
+        }
+    });
+
+    map.loadImage('https://a.tiles.mapbox.com/v4/marker/pin-m-camera+1087bf@2x.png?access_token=' + mapboxgl.accessToken, function(error, image) {
+        if (error) throw error;
+        map.addImage('blue-pin', image); //38x55px, shadow adds 5px
+    });
+    map.addSource('photos', {
+        'type': 'geojson',
+        'data': 'geojson/photos.json'
+    });
+    map.addLayer({
+        'id': 'photos_direction',
+        'type': 'fill',
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2']
+        },
+        'source': 'photos',
+        'paint': {
+            'fill-color': 'rgba(99, 182, 229, 0.5)',
+        }
+    });
+    map.addLayer({
+        'id': 'photos_outline',
+        'type': 'line',
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2']
+        },
+        'source': 'photos',
+        'paint': {
+            'line-color': '#7ec9b1',
+            'line-width': 2
+        }
+    });
+    map.addLayer({
+        'id': 'photos_points',
+        'type': 'symbol',
+        'source': 'photos',
+        //'filter': ["match", ["geometry-type"], ["Point"]],
+        'filter': ["==", ["geometry-type"], "Point"],
+        'layout': {
+            'visibility': (typeof activeLayers['p2'] === 'undefined') ? 'none' : activeLayers['p2'],
+            'icon-image': 'blue-pin',
+            'icon-allow-overlap': true,
+            'icon-size': 0.5,
+            'symbol-placement': 'point',
+        }
+    });
+
+    // When a click event occurs on a feature in the photo layer,
+    // open a popup at the location of the click, with description
+    // HTML from the click event's properties.
+    var f = function(e) {
+        new mapboxgl.Popup()
+            //.setWidth('auto')
+            .setLngLat(e.lngLat)
+            .setHTML('<div class="marker-title">' + e.features[0].properties.title + "</div>" +
+                '<div class="marker-description"><a href="' + e.features[0].properties.photo +
+                '" target="_"><img src="' + e.features[0].properties.thumbnail + '"></a><br>' +
+                (e.features[0].properties.author ? 'Foto: ' + e.features[0].properties.author + ' ': '') +
+                (e.features[0].properties.year ? e.features[0].properties.year : '') +
+                (e.features[0].properties.source ? '<br>Sursa: ' + e.features[0].properties.source + "</div>" : '</div>') +
+                (e.features[0].properties.description ? '<div class="marker-description">' + e.features[0].properties.description + "</div>" : ''))
+            .setMaxWidth('none')
+            .addTo(map);
+    };
+
+    // Add popups for both points and geometry
+    map.on('click', 'photos_points', f);
+    map.on('click', 'photos_direction', f);
+     
+    // Change the cursor to a pointer when
+    // the mouse is over the photos layer.
+    map.on('mouseenter', 'photos_points', () => {
+    map.getCanvas().style.cursor = 'pointer';
+    });
+     
+    // Change the cursor back to a pointer
+    // when it leaves the photos layer.
+    map.on('mouseleave', 'photos_points', () => {
+    map.getCanvas().style.cursor = '';
+    });
+});
+
+// Create the hash for layers
+function updateLayersHash() {
+    lyr_hash = '';
+    for (var key in activeLayers) {
+        if (activeLayers[key] == 'visible') {
+            lyr_hash = lyr_hash + '!' + key;
+        }
+    }
+    location.replace(getCoordsHash() + '/' + lyr_hash);
+}
+
+// Create the hash for coordinates, rotation and zoom
+function getCoordsHash() {
+    const center = map.getCenter();
+    const hash =
+        '#' +
+        (map.getZoom() + 1).toFixed(2) +
+        '/' +
+        center.lat.toFixed(5) +
+        '/' +
+        center.lng.toFixed(5) +
+        '/' +
+        Math.round(10 * map.getBearing()) / 10;
+    return (hash);
+};
+
+// Update hash function
+let shouldUpdate = true;
+
+const updateCoordHash = function() {
+    if (!shouldUpdate) {
+        // do not update the URL when the view was changed in the 'popstate' handler
+        shouldUpdate = true;
+        return;
+    }
+    location.replace(getCoordsHash() + "/" + lyr_hash);
+}
+
+// Update hash after moving the map
+map.on('moveend', updateCoordHash);
+
+// Define all the layers
+const toggleableLayers = [
+    ['1927', 'a1', ['1927']],
+    ['1938', 'a2', ['1938']],
+    ['1943', 'a6', ['1943']],
+    ['1966', 'a3', ['1966_0', '1966_1', '1966_2', '1966_3', '1966_4', '1966_5']],
+    ['1976', 'a8', ['1976_0', '1976_1', '1976_2']],
+    ['1977', 'a9', ['1977_0', '1977_1']],
+    ['1978', 'a5', ['1978']],
+    ['1980', 'a7', ['1980_0', '1980_1', '1980_2']],
+    ['Străzi prezent', 'a4', current_street_layers],
+    //['Străzi distruse', 'p1', ['streets']],
+    ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
+    ['Fotografii', 'p2', ['photos_points', 'photos_direction', 'photos_outline']]
+];
+
+menu = document.createElement('nav');
+menu.id = 'menu';
+// Set up the corresponding toggle button for each layer.
+toggleableLayers.forEach(layer => {
+
+    // Create a link.
+    const link = document.createElement('a');
+    link.id = layer[0];
+    link.href = '#';
+    link.textContent = layer[0];
+    if (activeLayers[layer[1]] === 'undefined' || activeLayers[layer[1]] != 'visible') {
+        link.className = '';
+    } else {
+        link.className = 'active';
+    }
+
+    // Show or hide layer when the toggle is clicked.
+    link.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+
+        var visibility = map.getLayoutProperty(layer[2][0], 'visibility');
+        // Toggle layer visibility by changing the layout object's visibility property
+        if (visibility === 'visible') {
+            this.className = '';
+            // A layer can contain more tile layers
+            for (layercount in layer[2]) {
+                map.setLayoutProperty(layer[2][layercount], 'visibility', 'none');
+            }
+            activeLayers[layer[1]] = 'none';
+            updateLayersHash();
+        } else {
+            this.className = 'active';
+            for (layercount in layer[2]) {
+                map.setLayoutProperty(layer[2][layercount], 'visibility', 'visible');
+            }
+            activeLayers[layer[1]] = 'visible';
+            updateLayersHash();
+        };
+    };
+
+    //const layersMenu = document.getElementById('menu');
+    //layersMenu.appendChild(link);
+    menu.appendChild(link);
+});
+
+const layersMenu = document.getElementById('menu-panel');
+layersMenu.appendChild(menu);
+
+//Create button to hide/show layers
+const button = document.createElement('button');
+button.className = "menu-button menu-button-chevron";
+button.textContent = "»"
+button.onclick = function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    menu = document.getElementById('menu');
+    if (this.className == 'menu-button menu-button-chevron') {
+        this.className = 'menu-button menu-button-compact';
+        this.textContent = ""
+        menu.style.visibility = 'hidden';
+    } else {
+        menu = document.getElementById('menu');
+        menu.style.visibility = 'visible';
+        this.className = "menu-button menu-button-chevron";
+        this.textContent = "»"
+    }
+}
+layersMenu.appendChild(button);
+
+// Create About panel
+const text = document.createElement('p');
+text.innerHTML = '<div class="about-content"><font face="sans-serif">\
+<h3>Despre</h3>\
+<p>Contact: fostulbucuresti@gmail.com</p>\
+<p>Rotire hartă: <i>Control + click</i> sau <i>click dreapta</i></p>\
+Sursele fotografiilor aeriene:\
+<ul style="list-style: round;">\
+<li><b>1927</b> - Compagnie aérienne française (CAF), Biblioteca Academiei, obținute prin amabilitatea lui <a href="http://www.costingheorghe.ro/thenow/" target="_blank">Costin Gheorghe</a></li>\
+<li><b>1938, vara</b> - Dosar german de obiective militare din România, National Archives, S.U.A., obținute prin amabilitatea lui John Calvin</li>\
+<li><b>1943, 19 august</b> - Zboruri de recunoaștere ale escadrilei <a href="http://www.saairforce.co.za/the-airforce/squadrons/12/60-squadron" target="_blank">60 SAAF</a> (South African Air Force), US Air Force Historical Research Center, scanate de către <a href="http://www.low-level-ploesti.org/" target="_blank">Col. David H. Klaus, USAF, Retired</a>. Obținute prin amabilitatea lui <a href="http://macristudio.com" target="_blank">Ionuț Macri</a>.</li>\
+<li><b>1966, 12 iulie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/Corona_(satellite)" target="_blank"> Corona (KH-4A)</a>, U.S. Geological Survey, obținute prin amabilitatea lui Ionuț Sandric</li>\
+<li><b>1978, 30 martie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
+<li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul></font>\
+</p></font></div>';
+
+const element = document.createElement('div');
+element.className = 'about-black';
+const about = document.createElement('div');
+about.className = 'about-panel'
+
+element.appendChild(about);
+about.appendChild(text);
+
+const aboutPanel = document.getElementById('about');
+
+about.onclick = function(e) {
+    e.stopPropagation();
+};
+
+element.onclick = function(e) {
+    aboutPanel.removeChild(element);
+    e.stopPropagation();
+    return false;
+}
+
+// Define function that shows the panel
+function showAboutPanel() {
+    aboutPanel.appendChild(element);
+}
+
+//GoogleAnaytics
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-62723078-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</body>
+</html>
