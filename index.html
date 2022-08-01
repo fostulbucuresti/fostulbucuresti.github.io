@@ -383,6 +383,44 @@ map.on('load', () => {
                 'visibility': (typeof activeLayers['a3'] === 'undefined') ? 'none' : activeLayers['a3'],
             }
         }, first_street_layer);
+    };
+
+    var urls_1976 = ['fostulbucuresti.5uk1vt68', 'fostulbucuresti.8lvkco9y', 'fostulbucuresti.52ptpwzs'];
+    for (var i = 0; i < urls_1976.length; i++) {
+        map.addSource('1976_source_' + i, {
+            'type': 'raster',
+            'url': 'mapbox://' + urls_1976[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1976, USGS',
+            'tileSize': 256,
+            'maxzoom': 18
+        });
+        map.addLayer({
+            'id': '1976_' + i,
+            'source': '1976_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a8'] === 'undefined') ? 'none' : activeLayers['a8'],
+            }
+        }, first_street_layer);
+    }
+
+    var urls_1977 = ['fostulbucuresti.5pd5vijv', 'fostulbucuresti.cc6fi3yi']
+    for (var i = 0; i < urls_1977.length; i++) {
+        map.addSource('1977_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1977[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1977, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1977_' + i,
+            'source': '1977_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a9'] === 'undefined') ? 'none' : activeLayers['a9']
+            }
+        }, first_street_layer);
     }
 
     map.addSource('1978_source', {
@@ -609,6 +647,8 @@ const toggleableLayers = [
     ['1938', 'a2', ['1938']],
     ['1943', 'a6', ['1943']],
     ['1966', 'a3', ['1966_0', '1966_1', '1966_2', '1966_3', '1966_4', '1966_5']],
+    ['1976', 'a8', ['1976_0', '1976_1', '1976_2']],
+    ['1977', 'a9', ['1977_0', '1977_1']],
     ['1978', 'a5', ['1978']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2']],
     ['Străzi prezent', 'a4', current_street_layers],
@@ -700,6 +740,8 @@ Sursele fotografiilor aeriene:\
 <li><b>1938, vara</b> - Dosar german de obiective militare din România, National Archives, S.U.A., obținute prin amabilitatea lui John Calvin</li>\
 <li><b>1943, 19 august</b> - Zboruri de recunoaștere ale escadrilei <a href="http://www.saairforce.co.za/the-airforce/squadrons/12/60-squadron" target="_blank">60 SAAF</a> (South African Air Force), US Air Force Historical Research Center, scanate de către <a href="http://www.low-level-ploesti.org/" target="_blank">Col. David H. Klaus, USAF, Retired</a>. Obținute prin amabilitatea lui <a href="http://macristudio.com" target="_blank">Ionuț Macri</a>.</li>\
 <li><b>1966, 12 iulie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/Corona_(satellite)" target="_blank"> Corona (KH-4A)</a>, U.S. Geological Survey, obținute prin amabilitatea lui Ionuț Sandric</li>\
+<li><b>1976, 20 februarie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
+<li><b>1977, 13 septembrie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1978, 30 martie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
 <li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul></font>\
 </p></font></div>';
