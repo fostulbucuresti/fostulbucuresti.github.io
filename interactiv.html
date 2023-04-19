@@ -84,29 +84,18 @@
 
 
 <script>
-var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
-L.mapbox.accessToken = 'pk.eyJ1IjoicmF6dmFuciIsImEiOiJRNzhPNkZRIn0.EQlU2kYMEAEdxXBSk5kHzg';
+L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6ImNsZ2xqa2toeDAxeG0zZm11aHZicjV3a3MifQ.wjnNgFry1p2PH9EQ11Kquw';
+var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16)
+var sattelite = L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6ImNsZ2xqa2toeDAxeG0zZm11aHZicjV3a3MifQ.wjnNgFry1p2PH9EQ11Kquw', {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: 'Mapbox'}).addTo(map);
 
 var drawnItems = L.geoJson()
 map.addLayer(drawnItems);
-
-//Load Nokia HERE sattelite images
-var HERE_satelliteDay = L.tileLayer('http://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-	attribution: 'Base map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>, <a href="mailto:fostulbucuresti@gmail.com">Contact</a>',
-	subdomains: '1234',
-	mapID: 'newest',
-	app_id: 'Y8m9dK2brESDPGJPdrvs',
-	app_code: 'dq2MYIvjAotR8tHvY8Q_Dg',
-	base: 'aerial',
-	minZoom: 0,
-	maxZoom: 20
-}).addTo(map);
 
 //Historical streets layer from mapbox
 var streetsLayer = L.mapbox.tileLayer('fostulbucuresti.peqwvsed').addTo(map);
 
 //Photo layer
-var photoLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4989ce0').addTo(map);
+var photoLayer = L.mapbox.featureLayer().loadURL('geojson/photos.json');
 //Places layer
 var placesLayer = L.mapbox.featureLayer().loadID('fostulbucuresti.m4972j79').addTo(map);
 
@@ -288,3 +277,4 @@ map.addControl(saveControl);
 
 </body>
 </html>
+

@@ -3,8 +3,8 @@
 <head>
 <meta charset=utf-8 />
 <title>București</title>
-<script src='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js'></script>
-<link href='https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.js'></script>
+<link href='https://api.mapbox.com/mapbox.js/v3.3.1/mapbox.css' rel='stylesheet' />
 <link rel="stylesheet" href="scripts/leaflet.infoButton.css" />
 <script src="scripts/leaflet.infoButton.js"></script>
 <script src="scripts/leaflet-hash.js"></script>
@@ -97,28 +97,15 @@ L.mapbox.marker.createPopup = function(e, r) {
        (r || sanitize)(i)
 };
 
-var map = L.map('map').setView([44.4270377479225, 26.0852980613709], 16);
-L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6ImNsZ2xqNjY5cTFwdGUzY2xicWRqbGV0YnEifQ.8Pk8AcuqpANBp1wVQBFKbg';
+L.mapbox.accessToken = 'pk.eyJ1IjoiZm9zdHVsYnVjdXJlc3RpIiwiYSI6ImNsZ2xqa2toeDAxeG0zZm11aHZicjV3a3MifQ.wjnNgFry1p2PH9EQ11Kquw';
+var map = L.mapbox.map('map').setView([44.4270377479225, 26.0852980613709], 16);
+satellite = L.mapbox.styleLayer('mapbox://styles/mapbox/satellite-v9').addTo(map);
 
 var drawnItems = L.geoJson()
 map.addLayer(drawnItems);
 
 //Add show location
 L.control.locate().addTo(map);
-
-//Load Nokia HERE sattelite images
-var HERE_satelliteDay = L.tileLayer('https://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/satellite.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-//var HERE_hybridDay = L.tileLayer('https://{s}.{base}.maps.cit.api.here.com/maptile/2.1/maptile/{mapID}/hybrid.day/{z}/{x}/{y}/256/png8?app_id={app_id}&app_code={app_code}', {
-//var HERE_Streets = L.tileLayer('https://{s}.aerial.maps.ls.hereapi.com/maptile/2.1/streettile/newest/hybrid.grey.day/{z}/{x}/{y}/256/png8?app_id=szl0C8iCbelZ2Isouvf1&app_code=WJUAfRBVzccNZ-bdH-oyUA', {
-    attribution: '<a href="mailto:fostulbucuresti@gmail.com">Contact</a> | Base map &copy; 1987-2014 <a href="https://developer.here.com">HERE</a>',
-    subdomains: '1234',
-    mapID: 'newest',
-    app_id: 'szl0C8iCbelZ2Isouvf1',
-    app_code: 'WJUAfRBVzccNZ-bdH-oyUA',
-    base: 'aerial',
-    minZoom: 0,
-    maxZoom: 20
-}).addTo(map);
 
 //Current streets layer
 var currentStreets = L.tileLayer('https://mt1.google.com/vt/lyrs=h&hl=ro&x={x}&y={y}&z={z}&apistyle=s.e%3Al.i%7Cp.v%3Aoff', {
@@ -284,3 +271,4 @@ var hash = new L.Hash(map);
 </script>
 </body>
 </html>
+
