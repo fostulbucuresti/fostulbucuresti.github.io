@@ -451,21 +451,24 @@ map.on('load', () => {
         }, first_street_layer);
     }
 
-    map.addSource('1978_source', {
-        'type': 'raster',
-        'url': 'mapbox://fostulbucuresti.2ezig8uc',
-        'attribution': 'KH-9 Hexagon, Low Resolution Mapping, 1978, USGS',
-        'tileSize': 256,
-        'maxzoom': 15,
-    });
-    map.addLayer({
-        'id': '1978',
-        'source': '1978_source',
-        'type': 'raster',
-        'layout': {
-            'visibility': (typeof activeLayers['a5'] === 'undefined') ? 'none' : activeLayers['a5'],
-        }
-    }, first_street_layer);
+    var urls_1978 = ['fostulbucuresti.be7qq6lf', 'fostulbucuresti.dy1y760k']
+    for (var i = 0; i < urls_1978.length; i++) {
+        map.addSource('1978_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1978[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1978, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1978_' + i,
+            'source': '1978_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a5'] === 'undefined') ? 'none' : activeLayers['a5']
+            }
+        }, first_street_layer);
+    }
 
     var urls_1980 = ['fostulbucuresti.dg85xush', 'fostulbucuresti.8dcivw20', 'fostulbucuresti.cxfce0jt', 'fostulbucuresti.5mitx35s', 'fostulbucuresti.2t5ci0sl']
     for (var i = 0; i < urls_1980.length; i++) {
@@ -678,8 +681,8 @@ const toggleableLayers = [
     ['1972', 'a10', ['1972_0', '1972_1']],
     ['1976', 'a8', ['1976_0', '1976_1', '1976_2']],
     ['1977', 'a9', ['1977_0', '1977_1']],
-    ['1978', 'a5', ['1978']],
-    ['1980', 'a7', ['1980_0', '1980_1', '1980_2']],
+    ['1978', 'a5', ['1978_0', '1978_1']],
+    ['1980', 'a7', ['1980_0', '1980_1', '1980_2', '1980_3', '1980_4']],
     ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
     ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
@@ -772,7 +775,7 @@ Sursele fotografiilor aeriene:\
 <li><b>1972, 08 august</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1976, 20 februarie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1977, 13 septembrie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
-<li><b>1978, 30 martie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
+<li><b>1978, 18 august</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul></font>\
 </p></font></div>';
 
