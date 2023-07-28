@@ -470,6 +470,25 @@ map.on('load', () => {
         }, first_street_layer);
     }
 
+    var urls_1979 = ['fostulbucuresti.9km6720j', 'fostulbucuresti.5iti7lou']
+    for (var i = 0; i < urls_1979.length; i++) {
+        map.addSource('1979_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1979[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1979, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1979_' + i,
+            'source': '1979_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a11'] === 'undefined') ? 'none' : activeLayers['a11']
+            }
+        }, first_street_layer);
+    }
+
     var urls_1980 = ['fostulbucuresti.dg85xush', 'fostulbucuresti.8dcivw20', 'fostulbucuresti.cxfce0jt', 'fostulbucuresti.5mitx35s', 'fostulbucuresti.2t5ci0sl']
     for (var i = 0; i < urls_1980.length; i++) {
         map.addSource('1980_source_' + i, {
@@ -488,6 +507,22 @@ map.on('load', () => {
             }
         }, first_street_layer);
     }
+
+    map.addSource('1982_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.3heout3c',
+        'attribution': 'KH-9 Hexagon, High Resolution Mapping, 1982, USGS',
+        'tileSize': 256,
+        'maxzoom': 15,
+    });
+    map.addLayer({
+        'id': '1982',
+        'source': '1982_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a12'] === 'undefined') ? 'none' : activeLayers['a12'],
+        }
+    }, first_street_layer);
 
     map.addSource('streets_source', {
         type: 'vector',
@@ -682,7 +717,9 @@ const toggleableLayers = [
     ['1976', 'a8', ['1976_0', '1976_1', '1976_2']],
     ['1977', 'a9', ['1977_0', '1977_1']],
     ['1978', 'a5', ['1978_0', '1978_1']],
+    ['1979', 'a11', ['1979_0', '1979_1']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2', '1980_3', '1980_4']],
+    ['1982', 'a12', ['1982']],
     ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
     ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
@@ -763,6 +800,10 @@ layersMenu.appendChild(button);
 // Create About panel
 const text = document.createElement('p');
 text.innerHTML = '<div class="about-content"><font face="sans-serif">\
+<form action="https://www.paypal.com/donate" method="post" target="_blank">\
+<input type="hidden" name="hosted_button_id" value="QPBE49SM3Q9YE" />\
+<input type="image" align="right" style="padding-right:5%;" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button"/>\
+</form>\
 <h3>Despre</h3>\
 <p>Contact: fostulbucuresti@gmail.com</p>\
 <p>Rotire hartă: <i>Control + click</i> sau <i>click dreapta</i></p>\
@@ -776,7 +817,9 @@ Sursele fotografiilor aeriene:\
 <li><b>1976, 20 februarie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1977, 13 septembrie</b> - Programul de sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1978, 18 august</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
-<li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul></font>\
+<li><b>1979, 10 septembrie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
+<li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
+<li><b>1982, 29 iunie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul>\
 </p></font></div>';
 
 const element = document.createElement('div');
