@@ -17,6 +17,7 @@
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+<script id="search-js" defer="" src="https://api.mapbox.com/search-js/v1.0.0-beta.18/web.js"></script>
 </head>
 <body>
 <style>
@@ -289,21 +290,41 @@ const map = new mapboxgl.Map({
     customAttribution: '<strong><a href="#" onclick="showAboutPanel();">Despre site</a></strong>'
 });
 
-// Add navigation buttons
-map.addControl(new mapboxgl.NavigationControl(), 'top-left');
 
-// Add geolocate control
-map.addControl(
-    new mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: false,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true
-    }), 'top-left'
-);
+
+
+// Add search box
+const searchJS = document.getElementById('search-js');
+searchJS.onload = function () {
+    const searchBox = new MapboxSearchBox();
+    searchBox.accessToken = mapboxgl.accessToken;
+    searchBox.placeholder = 'Caută';
+    searchBox.options = {
+        types: 'neighborhood,street,address,poi',
+        proximity: [26.085298, 44.427037],
+        bbox: [25.8941, 44.2659, 26.2999, 44.6222],
+        language: "ro",
+    };
+    searchBox.marker = true;
+    searchBox.mapboxgl = mapboxgl;
+    map.addControl(searchBox, 'top-left');
+
+    // Add navigation buttons
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+    // Add geolocate control
+    map.addControl(
+        new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            // When active the map will receive updates to the device's location as it changes.
+            trackUserLocation: false,
+            // Draw an arrow next to the location dot to indicate which direction the device is heading.
+            showUserHeading: true
+        }), 'top-left'
+    );
+};
 
 //Add full screen control
 //map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}), 'top-left');
