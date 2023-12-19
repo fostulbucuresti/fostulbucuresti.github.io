@@ -15,8 +15,12 @@
 1943, 1966, 1978, 1980">
 <title>București</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.6.1/mapbox-gl.js"></script>
+<meta name="theme-color" content="black">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<!-- Load the `mapbox-gl-geocoder` plugin. -->
+<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.2/mapbox-gl-geocoder.min.js"></script>
+<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.2/mapbox-gl-geocoder.css" type="text/css">
 </head>
 <body>
 <style>
@@ -33,15 +37,16 @@ max-height: calc(100% - 42px);
 #menu {
   background: #fff;
   position: absolute;
-  z-index: 1;
-  top: 10px;
+  z-index: 2;
   right: 10px;
   border-radius: 3px;
   width: 120px;
   border: 1px solid rgba(0, 0, 0, 0.4);
   font-family: 'Open Sans', sans-serif;
   max-height: inherit;
-  overflow-y: auto;*/
+  overflow-y: auto;
+  transition:
+      top 400ms;
 }
  
 #menu a {
@@ -191,17 +196,18 @@ color: #63b6e5;
     box-sizing: border-box;
     margin: 0px;
 }
-.menu-button-chevron {
-    top: 10px;
+
+.menu-button {
     right: 131px;
     background-color: rgba(255, 255, 255, 0.8);
     border-radius: 3px;
     border: 1px solid rgba(0, 0, 0, 0.4);
     height: 37px;
     width: 27px;
+    transition:
+        right 200ms, top 400ms;
 }
-.menu-button-compact {
-    top: 10px;
+.menu-button.compact {
     right: 10px;
     background-color: white;
     background-size: 26px 26px;
@@ -212,16 +218,53 @@ color: #63b6e5;
     width: 44px;
 }
 
-.menu-button-compact:hover {
+.menu-button.compact:hover {
    background-color: #f8f8f8;
 }
 
-.menu-button-chevron:hover {
+.menu-button:hover {
    background-color: rgba(242, 242, 242, 0.8);
 }
 
+/* Search button on mobile */
+/* override mapbox-gl-geocoder control styles on mobile */
+.mapboxgl-ctrl-top-left {
+  top: 0;
+  right: 0;
+  left: 0;
+}
+
+.mapboxgl-ctrl-top-left .mapboxgl-ctrl-geocoder {
+  margin: 0;
+  border-radius: 5px;
+}
+
+/* Search button on desktop */
+@media screen and (min-width: 640px) {
+  .mapboxgl-ctrl-top-left .mapboxgl-ctrl-geocoder {
+    margin: 10px 10px 0 10px;
+    border-radius: 4px;
+  }
+
+  .mapboxgl-ctrl-geocoder.mapboxgl-ctrl-geocoder--collapsed {
+    width: 36px;
+    min-width: 36px;
+  }
+}
+
+/* Default menu top */
+.menu-top {
+  top: 10px;
+}
+
+/* Menu top goes down on mobile for the search box */
+@media screen and (max-width: 640px) {
+  .menu-top.moved {
+    top: 60px;
+  }
+}
 </style>
- 
+
 <div id="about"></div>
 <div id="menu-panel"></div>
 <div id="map"></div>
@@ -287,6 +330,41 @@ const map = new mapboxgl.Map({
     pitchWithRotate: false,
     minZoom: 3,
     customAttribution: '<strong><a href="#" onclick="showAboutPanel();">Despre site</a></strong>'
+});
+
+// Define geocoder control
+const geocoder = new MapboxGeocoder({
+    accessToken: mapboxgl.accessToken,
+    mapboxgl: mapboxgl,
+    marker: true,
+    placeholder: "Caută",
+    language: "ro",
+    proximity: [26.085298, 44.427037],
+    bbox: [25.8941, 44.2659, 26.2999, 44.6222],
+    clearAndBlurOnEsc: true,
+    collapsed: true,
+    enableEventLogging: false
+});
+
+// Add the geocoder control to the map
+map.addControl(
+    geocoder, 'top-left'
+);
+
+// Move menu out of way when needed
+var observer = new MutationObserver(function (mutations) {
+  mutations.forEach(function (mutation) {
+    if (mutation.target.classList.contains('mapboxgl-ctrl-geocoder--collapsed')) {
+         menu.classList.remove("moved"); button.classList.remove("moved");
+    } else {
+         menu.classList.add("moved"); button.classList.add("moved");
+    }
+  });
+});
+
+observer.observe(geocoder.container, {
+    attributes: true,
+    attributeFilter: ['class']
 });
 
 // Add navigation buttons
@@ -727,6 +805,7 @@ const toggleableLayers = [
 ];
 
 menu = document.createElement('nav');
+menu.className = 'menu-top';
 menu.id = 'menu';
 // Set up the corresponding toggle button for each layer.
 toggleableLayers.forEach(layer => {
@@ -778,23 +857,23 @@ layersMenu.appendChild(menu);
 
 //Create button to hide/show layers
 const button = document.createElement('button');
-button.className = "menu-button menu-button-chevron";
-button.textContent = "»"
+button.className = 'menu-button';
+button.classList.add('menu-top');
+button.textContent = '»';
 button.onclick = function(e) {
     e.preventDefault();
     e.stopPropagation();
     menu = document.getElementById('menu');
-    if (this.className == 'menu-button menu-button-chevron') {
-        this.className = 'menu-button menu-button-compact';
-        this.textContent = ""
-        menu.style.visibility = 'hidden';
-    } else {
-        menu = document.getElementById('menu');
+    if (this.classList.contains('compact')) {
+        this.textContent = '»';
+        this.classList.toggle('compact');
         menu.style.visibility = 'visible';
-        this.className = "menu-button menu-button-chevron";
-        this.textContent = "»"
+    } else {
+        this.classList.toggle('compact');
+        this.textContent = '';
+        menu.style.visibility = 'hidden';
     }
-}
+};
 layersMenu.appendChild(button);
 
 // Create About panel
