@@ -328,60 +328,150 @@ const map = new mapboxgl.Map({
     bearing: rotation, //starting rotation
     hash: false,
     pitchWithRotate: false,
+    touchPitch: false,
     minZoom: 3,
     customAttribution: '<strong><a href="#" onclick="showAboutPanel();">Despre site</a></strong>'
 });
 
-// Define geocoder control
-const geocoder = new MapboxGeocoder({
-    accessToken: mapboxgl.accessToken,
-    mapboxgl: mapboxgl,
-    marker: true,
-    placeholder: "Caută",
-    language: "ro",
-    proximity: [26.085298, 44.427037],
-    bbox: [25.8941, 44.2659, 26.2999, 44.6222],
-    clearAndBlurOnEsc: true,
-    collapsed: true,
-    enableEventLogging: false
+// Add map controls
+function addMapControls () {
+    // Add navigation buttons
+    map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+
+    // Add geolocate control
+    map.addControl(
+        new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            // When active the map will receive updates to the device's location as it changes.
+            trackUserLocation: false,
+            // Draw an arrow next to the location dot to indicate which direction the device is heading.
+            showUserHeading: true
+        }), 'top-left'
+    );
+}
+
+// Add Search button
+// Load local features geojson
+const getJSON = async url => {
+  const response = await fetch(url);
+  if(!response.ok) // check if response worked (no 404 errors etc...)
+    throw new Error(response.statusText);
+
+  const data = response.json(); // get JSON from the response
+  return data; // returns a promise, which resolves to this data value
+}
+
+getJSON("geojson/features.json").then(data => {
+    // After features are loaded add the geocoder button
+    addGeocoderLocal(data);
+    addMapControls();
+}).catch(error => {
+    console.error(error);
+    addMapControls();
 });
 
-// Add the geocoder control to the map
-map.addControl(
-    geocoder, 'top-left'
-);
+// Remove diactritc from unicode chars
+const normalizeString = (str) => {
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+};
 
-// Move menu out of way when needed
-var observer = new MutationObserver(function (mutations) {
-  mutations.forEach(function (mutation) {
-    if (mutation.target.classList.contains('mapboxgl-ctrl-geocoder--collapsed')) {
-         menu.classList.remove("moved"); button.classList.remove("moved");
-    } else {
-         menu.classList.add("moved"); button.classList.add("moved");
+// Get the center of a street feature
+const getStreetCenter = (coordinates) => {
+    // Create a 'LngLatBounds' with both corners at the first coordinate.
+    const bounds = new mapboxgl.LngLatBounds(
+        coordinates[0],
+         coordinates[0]
+    );
+
+    // Extend the 'LngLatBounds' to include every coordinate in the bounds result.
+    for (const coord of coordinates) {
+        bounds.extend(coord);
     }
-  });
-});
+    return bounds.getCenter().toArray();
+};
 
-observer.observe(geocoder.container, {
-    attributes: true,
-    attributeFilter: ['class']
-});
+// Add Search for local features
+function addGeocoderLocal (data) {
 
-// Add navigation buttons
-map.addControl(new mapboxgl.NavigationControl(), 'top-left');
+    function forwardGeocoder(query) {
+    const matchingFeatures = [];
+    for (const feature of data.features) {
+        // Handle queries with different capitalization
+        // than the source data by calling toLowerCase().
+        if ( typeof feature.properties.title !== 'undefined' &&
+             normalizeString(feature.properties.title)
+                .includes(normalizeString(query)) && matchingFeatures.length < 5
+        ) {
+            feature['place_name'] = `${feature.properties.title}, Fostul București`;
+            feature['center'] = getStreetCenter(feature.geometry.coordinates);
+            feature['place_type'] = ['street'];
+            matchingFeatures.push(feature);
+          }
+        }
+        return matchingFeatures;
+    }
 
-// Add geolocate control
-map.addControl(
-    new mapboxgl.GeolocateControl({
-        positionOptions: {
-            enableHighAccuracy: true
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: false,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true
-    }), 'top-left'
-);
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        localGeocoder: forwardGeocoder,
+        mapboxgl: mapboxgl,
+        marker: false,
+        placeholder: "Caută",
+        language: "ro",
+        proximity: [26.085298, 44.427037],
+        bbox: [25.8941, 44.2659, 26.2999, 44.6222],
+        clearAndBlurOnEsc: true,
+        collapsed: true,
+        enableEventLogging: false
+    });
+
+    // Add the geocoder control to the map
+    map.addControl(
+        geocoder, 'top-left'
+    );
+
+    // Move menu out of way when needed
+    var observer = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            if (mutation.target.classList.contains('mapboxgl-ctrl-geocoder--collapsed')) {
+                menu.classList.remove("moved"); button.classList.remove("moved");
+            } else {
+            menu.classList.add("moved"); button.classList.add("moved");
+            }
+        });
+    });
+
+    observer.observe(geocoder.container, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
+
+    // Highlight found features
+    geocoder.on('result', (event) => {
+        if (event.result.place_type == "street") {
+            map.getSource('found_street_source').setData(event.result);
+        } else {
+            map.getSource('found_point_source').setData(event.result.geometry);
+        }
+    });
+
+    // Clear highlighted found features
+    geocoder.on('clear', () => {
+    map.getSource('found_street_source').setData({
+            'type': 'FeatureCollection',
+            'features': []
+        });
+    map.getSource('found_point_source').setData({
+            'type': 'FeatureCollection',
+            'features': []
+        });
+    });
+}
 
 //Add full screen control
 //map.addControl(new mapboxgl.FullscreenControl({container: document.querySelector('body')}), 'top-left');
@@ -637,6 +727,44 @@ map.on('load', () => {
         }
     });
 
+    // Add source and layer for found local streets
+    map.addSource('found_street_source', {
+        type: 'geojson',
+        'data': {
+          'type': 'FeatureCollection',
+          'features': []
+        }
+    });
+
+    map.addLayer({
+        'id': 'found_street',
+        'type': 'line',
+        "source": "found_street_source",
+        "layout": {
+            "line-join": "round",
+            "line-cap": "round",
+            'visibility': 'visible'
+        },
+        "paint": {
+            "line-color": "rgba(38, 82, 245, 0.8)",
+            'line-width': [
+                'interpolate', ['linear'],
+                ['zoom'],
+                12, ["*", ["get", "stroke-width"],
+                    ["/", 2, 10]
+                ],
+                14, ["*", ["get", "stroke-width"],
+                    ["/", 2, 2]
+                ],
+                16, ["*", ["get", "stroke-width"],
+                ],
+                20, ["*", ["get", "stroke-width"],
+                    ["*", 2, 4]
+                ]
+            ],
+        }
+    });
+
     map.addLayer({
         "id": "streets_labels",
         "type": "symbol",
@@ -660,6 +788,32 @@ map.on('load', () => {
             "text-halo-color": "hsl(0, 5%, 3%)",
             "text-halo-width": 1,
             "text-halo-blur": 0.5
+        }
+    });
+
+
+    // Add layer with icon for finding existing streets
+    map.loadImage('https://a.tiles.mapbox.com/v4/marker/pin-m-circle+4668f2@2x.png?access_token=' + mapboxgl.accessToken, function(error, image) {
+        if (error) throw error;
+        map.addImage('purple-pin', image); //38x55px, shadow adds 5px
+    });
+
+    map.addSource('found_point_source', {
+        'type': 'geojson',
+        'data': {
+            'type': 'FeatureCollection',
+            'features': []
+        }
+    });
+
+    map.addLayer({
+        'id': 'found_point',
+        'source': 'found_point_source',
+        'type': 'symbol',
+        'layout': {
+            'icon-image': 'purple-pin',
+            'icon-size': 0.5,
+            'symbol-placement': 'point',
         }
     });
 
