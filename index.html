@@ -692,6 +692,23 @@ map.on('load', () => {
         }
     }, first_street_layer);
 
+    map.addSource('1984_source', {
+        'type': 'raster',
+        'url': 'mapbox://fostulbucuresti.6eu9rs0n',
+        'attribution': 'KH-9 Hexagon, High Resolution Mapping, 1984, USGS',
+        'tileSize': 256,
+        'maxzoom': 15,
+    });
+    map.addLayer({
+        'id': '1984',
+        'source': '1984_source',
+        'type': 'raster',
+        'layout': {
+            'visibility': (typeof activeLayers['a13'] === 'undefined') ? 'none' : activeLayers['a13'],
+        }
+    }, first_street_layer);
+
+
     map.addSource('streets_source', {
         type: 'vector',
         url: 'mapbox://fostulbucuresti.ckz7hp9jv0wu820p7bj06yuh6-7eot4'
@@ -952,6 +969,7 @@ const toggleableLayers = [
     ['1979', 'a11', ['1979_0', '1979_1']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2', '1980_3', '1980_4']],
     ['1982', 'a12', ['1982']],
+    ['1984', 'a13', ['1984']],
     ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
     ['Străzi distruse', 'p1', ['streets_lines', 'streets_labels']],
@@ -1053,6 +1071,7 @@ Sursele fotografiilor aeriene:\
 <li><b>1979, 10 septembrie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
 <li><b>1982, 29 iunie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul>\
+<li><b>1984, 11 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul>\
 </p></font></div>';
 
 const element = document.createElement('div');
