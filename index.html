@@ -526,22 +526,25 @@ map.on('load', () => {
         }
     }, first_street_layer);
 
-    map.addSource('1943_source', {
-        'type': 'raster',
-        'url': 'mapbox://fostulbucuresti.6429zeom',
-        'attribution': 'SAAF 60 Squadron, 1943, courtesy of Col. David H. Klaus, USAF, Retired',
-        'tileSize': 256,
-        'maxzoom': 19
-    });
-    map.addLayer({
-        'id': '1943',
-        'source': '1943_source',
-        'type': 'raster',
-        'layout': {
-            'visibility': (typeof activeLayers['a6'] === 'undefined') ? 'none' : activeLayers['a6'],
-        },
-    }, first_street_layer);
-    
+    var urls_1943 = ['fostulbucuresti.6429zeom', 'fostulbucuresti.cxbnw7ph', 'fostulbucuresti.9byyyk50'];
+     for (var i = 0; i < urls_1943.length; i++) {
+        map.addSource('1943_source_' + i, {
+            'type': 'raster',
+            'url': 'mapbox://' + urls_1943[i],
+            'attribution': 'SAAF 60 Squadron, 1943, courtesy of Col. David H. Klaus, USAF, Retired',
+            'tileSize': 256,
+            'maxzoom': 19
+        });
+        map.addLayer({
+            'id': '1943_' + i,
+            'source': '1943_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a6'] === 'undefined') ? 'none' : activeLayers['a6'],
+            }
+        }, first_street_layer);
+    };
+
     var urls_1966 = ['fostulbucuresti.0cvkcdk1', 'fostulbucuresti.6mflkcc7', 'fostulbucuresti.1lhllfnd',
                      'fostulbucuresti.dlcbrygd', 'fostulbucuresti.9jqv1qtp', 'fostulbucuresti.10q8y7hq'];
     for (var i = 0; i < urls_1966.length; i++) {
@@ -960,7 +963,7 @@ map.on('moveend', updateCoordHash);
 const toggleableLayers = [
     ['1927', 'a1', ['1927']],
     ['1938', 'a2', ['1938']],
-    ['1943', 'a6', ['1943']],
+    ['1943', 'a6', ['1943_0', '1943_1', '1943_2']],
     ['1966', 'a3', ['1966_0', '1966_1', '1966_2', '1966_3', '1966_4', '1966_5']],
     ['1972', 'a10', ['1972_0', '1972_1']],
     ['1976', 'a8', ['1976_0', '1976_1', '1976_2']],
