@@ -679,21 +679,24 @@ map.on('load', () => {
         }, first_street_layer);
     }
 
-    map.addSource('1982_source', {
-        'type': 'raster',
-        'url': 'mapbox://fostulbucuresti.3heout3c',
-        'attribution': 'KH-9 Hexagon, High Resolution Mapping, 1982, USGS',
-        'tileSize': 256,
-        'maxzoom': 15,
-    });
-    map.addLayer({
-        'id': '1982',
-        'source': '1982_source',
-        'type': 'raster',
-        'layout': {
-            'visibility': (typeof activeLayers['a12'] === 'undefined') ? 'none' : activeLayers['a12'],
-        }
-    }, first_street_layer);
+    var urls_1982 = ['fostulbucuresti.0ynx98h3', 'fostulbucuresti.caoawspc']
+    for (var i = 0; i < urls_1982.length; i++) {
+        map.addSource('1982_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1982[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1982, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1982_' + i,
+            'source': '1982_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a12'] === 'undefined') ? 'none' : activeLayers['a12']
+            }
+        }, first_street_layer);
+    }
 
     map.addSource('1984_source', {
         'type': 'raster',
@@ -971,7 +974,7 @@ const toggleableLayers = [
     ['1978', 'a5', ['1978_0', '1978_1']],
     ['1979', 'a11', ['1979_0', '1979_1']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2', '1980_3', '1980_4']],
-    ['1982', 'a12', ['1982']],
+    ['1982', 'a12', ['1982_0', '1982_1']],
     ['1984', 'a13', ['1984']],
     ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
