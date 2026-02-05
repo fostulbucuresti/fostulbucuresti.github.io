@@ -698,6 +698,25 @@ map.on('load', () => {
         }, first_street_layer);
     }
 
+    var urls_1983 = ['fostulbucuresti.4gogpbdp', 'fostulbucuresti.20pwe66a']
+    for (var i = 0; i < urls_1983.length; i++) {
+        map.addSource('1983_source_' + i, {
+            type: 'raster',
+            url: 'mapbox://' + urls_1983[i],
+            'attribution': 'KH-9 Hexagon, High Resolution, 1983, USGS',
+            'tileSize': 256,
+            'maxzoom': 17
+        });
+        map.addLayer({
+            'id': '1983_' + i,
+            'source': '1983_source_' + i,
+            'type': 'raster',
+            'layout': {
+                'visibility': (typeof activeLayers['a14'] === 'undefined') ? 'none' : activeLayers['a14']
+            }
+        }, first_street_layer);
+    }
+
     map.addSource('1984_source', {
         'type': 'raster',
         'url': 'mapbox://fostulbucuresti.6eu9rs0n',
@@ -975,6 +994,7 @@ const toggleableLayers = [
     ['1979', 'a11', ['1979_0', '1979_1']],
     ['1980', 'a7', ['1980_0', '1980_1', '1980_2', '1980_3', '1980_4']],
     ['1982', 'a12', ['1982_0', '1982_1']],
+    ['1983', 'a14', ['1983_0', '1983_1']],
     ['1984', 'a13', ['1984']],
     ['Străzi prezent', 'a4', current_street_layers],
     //['Străzi distruse', 'p1', ['streets']],
@@ -1077,6 +1097,7 @@ Sursele fotografiilor aeriene:\
 <li><b>1979, 10 septembrie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1980, 16 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
 <li><b>1982, 29 iunie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li>\
+<li><b>1983, 17 octombrie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey, obținute cu ajutorul lui <a href="https://www.researchgate.net/profile/Dragos-Toma-Danila" target="_blank">Dragoș Toma-Dănilă</a></li>\
 <li><b>1984, 11 iulie</b> - Programul sateliți de spionaj <a href="https://en.wikipedia.org/wiki/KH-9_Hexagon" target="_blank">KH-9 Hexagon</a>, U.S. Geological Survey </li></ul>\
 </p></font></div>';
 
